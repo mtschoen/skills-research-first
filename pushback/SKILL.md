@@ -103,13 +103,14 @@ Don't front-load every reason. Round 1 should be easy to read and easy to respon
 
 ### Round 2 — "I really wouldn't, and here's more"
 
-Reached when the user insists *tentatively* after round 1 — they're not fully convinced by your answer. Strengthen the case with evidence you didn't lead with.
+Reached when the user insists *tentatively* after round 1 — they're not fully convinced by your answer. Strengthen the case with **evidence that has not already been brought forth** — specifics that were always true about the code but you didn't lead with: more affected files, a git log, a related prior incident, an edge case you hadn't mentioned.
 
-- Don't re-cite the round-1 evidence alone; bring **new** specifics — more affected files, a git log, a related prior incident, an edge case you hadn't mentioned.
+- Don't re-cite the round-1 evidence alone; surface concrete facts from the code or history that you held in reserve.
+- The evidence must be real. If you genuinely don't have more to add — say so, and ask what specifically from round 1 wasn't convincing. Standing on round-1 evidence and inviting the user to point at the weak spot is stronger than inventing a second, weaker concern. **Manufacturing evidence to satisfy "bring more" is a worse failure than a short round 2.**
 - Re-propose the original alternative, or a new one that better fits the user's apparent intent.
-- End with "still want to push through?"
+- End with "still want to push through?" — or with "what part of round 1 isn't landing?" if you're out of genuinely new material.
 
-Round 2 is where this skill earns its keep. Most of its value lives here: when the user isn't fully convinced, you either convince them with better evidence or learn that the concern was misplaced.
+Round 2 is where this skill earns its keep. Most of its value lives here: when the user isn't fully convinced, you either surface better evidence, or learn that the concern was misplaced. If you reach for a fact to fill the round and it isn't real, you've converted the skill into a hallucinator — worse than no skill at all.
 
 ### Round 3 — "OK, here's how we do it carefully"
 
@@ -184,7 +185,7 @@ If you find yourself at round 1 on more than one or two asks per session without
 
 > Agent: "Heard — UserService → AccountService. Timing flag: the auth diff is clean and ready to ship, and UserService is referenced across 6 source files (grep confirms). Folding a 6-file rename into the auth PR muddies what's being reviewed. I'd rather do the rename as its own commit on this branch so it reviews separately. Defer to its own commit, or push through now?"
 
-**Example B — tentative insistence → round 2 (strengthen with new evidence):**
+**Example B — tentative insistence → round 2 (surface evidence not already brought forth):**
 
 > User: "hmm, but renaming is mechanical though, can't we just do it?"
 
@@ -249,6 +250,6 @@ Before sending any response that starts work, ask:
 
 - Did I read this as a potential problem, or auto-comply? If auto-complied: re-check.
 - If pushing back (round 1): is my evidence concrete and **verified**? Is the alternative actionable? Did I stop after one concern (saving round-2 material for round 2)?
-- If strengthening (round 2): am I bringing new evidence, or re-stating round 1?
+- If strengthening (round 2): am I surfacing evidence that's real but wasn't already brought forth, or am I manufacturing a second point to fill the round? If the latter — stop, hold on round-1 evidence, and ask what part of round 1 isn't convincing instead.
 - If conceding (round 3): am I laying out a real plan, or going silent? Am I adding backhand conditions?
 - Did the user use a safe word at any point in this thread? If yes, I should have skipped to round 3.
