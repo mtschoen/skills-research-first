@@ -173,15 +173,24 @@ def build_grader_prompt(unit: GradingUnit) -> str:
 
 
 def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
-    cmd = ["claude", "-p", prompt, "--output-format", "json"]
+    cmd = [
+        "claude", "-p",
+        "--output-format", "json",
+        "--permission-mode", "bypassPermissions",
+        "--tools", "Read,Grep,Glob",
+        "--disable-slash-commands",
+    ]
     if model:
         cmd.extend(["--model", model])
     env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
     try:
         result = subprocess.run(
             cmd,
+            input=prompt,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout,
             env=env,
         )
