@@ -205,14 +205,54 @@ def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
         return {"_error": f"grader stdout not JSON: {e}; raw={result.stdout[:500]}"}
 
     inner_text = wrapper.get("result", "") if isinstance(wrapper, dict) else ""
-    inner_text = inner_text.strip()
-    if inner_text.startswith("```"):
-        lines = inner_text.splitlines()
-        inner_text = "\n".join(l for l in lines if not l.strip().startswith("```"))
+    payload = _extract_json_object(inner_text)
+    if payload is None:
+        return {"_error": f"grader inner payload has no JSON object; raw={inner_text[:500]}"}
     try:
-        return json.loads(inner_text)
+        return json.loads(payload)
     except json.JSONDecodeError as e:
-        return {"_error": f"grader inner payload not JSON: {e}; raw={inner_text[:500]}"}
+        return {"_error": f"grader inner JSON failed to parse: {e}; raw={payload[:500]}"}
+
+
+def _extract_json_object(text: str) -> str | None:
+    """Extract the first balanced top-level JSON object from a string.
+
+    Handles prose-before-JSON, code-fence wrappers, and trailing prose.
+    Returns None if no balanced object can be found.
+    """
+    if not text:
+        return None
+    # Strip code fences if present
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        lines = stripped.splitlines()
+        stripped = "\n".join(l for l in lines if not l.strip().startswith("```"))
+    # Find first { and walk balanced braces, respecting strings
+    start = stripped.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(stripped)):
+        c = stripped[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif c == "\\":
+                escape = True
+            elif c == '"':
+                in_string = False
+            continue
+        if c == '"':
+            in_string = True
+        elif c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                return stripped[start:i + 1]
+    return None
 
 
 def load_evals(evals_path: Path) -> tuple[dict, dict]:
