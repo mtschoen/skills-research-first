@@ -157,6 +157,6 @@ After building the skill, deploy per the user's standard skill workflow:
 - `~/.claude/skills/maintaining-full-coverage/` — existing skill on coverage discipline; complements this one
 - `~/.claude/skills/smoke-test/` — existing skill on post-change verification
 - `~/.claude/skills/wrap/` — reference for skill structure/style in this user's kit
-- WindowStream project at `C:\Users\mtsch\WindowStream` — git log and `docs/superpowers/specs/2026-04-19-windowstream-design.md` for a worked example of integration-heavy testing
+- A real project's git log and design docs for a worked example of integration-heavy testing
 
 No user interview is required; the thesis and techniques above are well-validated. Keep the skill under 300 lines in `SKILL.md`; push detail into references.
