@@ -1,6 +1,7 @@
 ---
 name: running-spikes
-description: Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime. Default toward action — spin up a hello-world in a scratch dir, hack on it, learn from running code instead of inferring from docs. Tiered: small in-place experiments announce-and-go; new project templates or package installs ask first. Default-throwaway scratch; can be promoted explicitly. Breadcrumbs in ~/.claude/notes/spike_<slug>.md so prior spikes aren't re-litigated; a curated registry indexes the generally-useful ones. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked. Fires phase-agnostically — during brainstorming, plan-writing, AND mid-implementation.
+description: >-
+  Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime. Default toward action — spin up a hello-world in a scratch dir, hack on it, learn from running code instead of inferring from docs. Tiered: small in-place experiments announce-and-go; new project templates or package installs ask first. Default-throwaway scratch; can be promoted explicitly. Breadcrumbs in ~/.claude/notes/spike_<slug>.md so prior spikes aren't re-litigated; a curated registry indexes the generally-useful ones. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked. Fires phase-agnostically — during brainstorming, plan-writing, AND mid-implementation.
 ---
 
 # Running Spikes
