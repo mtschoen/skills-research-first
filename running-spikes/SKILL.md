@@ -42,6 +42,7 @@ Note: "authoritative docs exist" is deliberately NOT a suppression gate. Even wh
 The boundary is **"does it leave artifacts beyond a single scratch file?"**
 
 **Small (announce-and-go):**
+
 - Single-file scripts (`python -c`, `node -e`)
 - REPL-style probes (`python -i`, `dotnet fsi`)
 - `curl` against a known endpoint
@@ -53,6 +54,7 @@ Heads-up format — one line, then go:
 > "Spiking on whether httpx follows redirects across schemes — single-file probe."
 
 **Medium+ (ask first):**
+
 - New project templates (`npm init`, `dotnet new`, `cargo new`, `uv init`)
 - Package installs (`pip install`, `npm install`)
 - Cloning third-party repos to inspect
@@ -139,6 +141,7 @@ Before firing on a topic, in order:
 When the spike yields keep-able code, present three options:
 
 > "The hello-world is working and matches what your <component> needs. Three options:
+>
 > 1. **Promote** — move `.claude/spikes/<slug>/probe.py` into `<destination-path>` as the foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
 > 2. **Keep iterating** — refine in scratch first.
 > 3. **Leave as scratch** — I have what I need; the spike note is saved.
@@ -193,6 +196,7 @@ All re-engage on promotion.
 **Example E — promotion offer:**
 
 > Agent (after a spike that yielded a working `redirect_client.py`): "The hello-world is working and matches what your order service needs. Three options:
+>
 > 1. **Promote** — move `.claude/spikes/httpx-redirect-schemes/probe.py` into `src/clients/http_client.py` as the starting foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
 > 2. **Keep iterating** — refine in scratch first.
 > 3. **Leave as scratch** — I have what I need; the spike note is saved.
