@@ -226,7 +226,7 @@ def _extract_json_object(text: str) -> str | None:
     stripped = text.strip()
     if stripped.startswith("```"):
         lines = stripped.splitlines()
-        stripped = "\n".join(l for l in lines if not l.strip().startswith("```"))
+        stripped = "\n".join(line for line in lines if not line.strip().startswith("```"))
     # Find first { and walk balanced braces, respecting strings
     start = stripped.find("{")
     if start < 0:
