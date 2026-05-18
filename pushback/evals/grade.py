@@ -330,8 +330,8 @@ def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str)
             **common,
         )]
 
-    units = []
-    prior_rounds = []
+    units: list = []
+    prior_rounds: list[dict] = []
     for round_entry in eval_entry["rounds"]:
         round_n = round_entry["round"]
         round_dir = run_dir / f"round-{round_n}"
@@ -380,7 +380,7 @@ def summarize(records: list[dict]) -> dict:
             pass_rates.append(r["summary"].get("pass_rate", 0.0))
     mean_rate = sum(pass_rates) / len(pass_rates) if pass_rates else 0.0
 
-    by_config = {"with_skill": [], "without_skill": []}
+    by_config: dict[str, list] = {"with_skill": [], "without_skill": []}
     for r in records:
         config = r.get("config")
         if config in by_config and "summary" in r:

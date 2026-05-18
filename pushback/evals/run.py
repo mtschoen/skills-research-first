@@ -156,8 +156,8 @@ def run_single_turn(eval_entry: dict, config: str, run_dir: Path, skill_md: str,
 
 
 def run_chained(eval_entry: dict, config: str, run_dir: Path, skill_md: str, model: str | None, timeout: int) -> dict:
-    prior_rounds = []
-    rounds_done = []
+    prior_rounds: list[dict] = []
+    rounds_done: list[dict] = []
     for round_entry in eval_entry["rounds"]:
         round_n = round_entry["round"]
         round_dir = run_dir / f"round-{round_n}"
