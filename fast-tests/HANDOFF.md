@@ -119,7 +119,7 @@ Exclusion IS correct for truly-untestable classes (platform framework bindings �
 
 ## Suggested skill structure
 
-```
+```text
 ~/skills-dev/fast-tests/
   SKILL.md                       # principles + triggers + thesis
   references/
@@ -148,6 +148,7 @@ These are real observations from the WindowStream session (Windows → Android X
 ## Deployment
 
 After building the skill, deploy per the user's standard skill workflow:
+
 1. Work under `~/skills-dev/fast-tests/`
 2. Install to `~/.claude/skills/fast-tests/` via the existing install script (see `~/skills-dev/install-skills.sh` or `install-skills.bat`)
 3. Publish to GitHub if appropriate (per `reference_skills_dev.md` — user publishes selectively)
