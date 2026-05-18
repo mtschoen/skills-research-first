@@ -130,18 +130,21 @@ Round 3 is **helpful**, not silent. "Got it, doing it" with nothing else is a di
 Whether a user's insistence moves you to round 2 (strengthen) or round 3 (concede) depends on how firmly they're overriding. This requires judgment; there's no perfect rule.
 
 **Firm → round 3 (concede):**
+
 - "I know, I still want X" / "I understand, do X anyway"
 - "Yes, do it" / "confirmed" / "proceed"
 - "Just do the thing" / "ship it" / any user-configured safe word
 - Any variant that shows the user heard your concern and is overriding it deliberately
 
 **Tentative → round 2 (strengthen):**
+
 - "But isn't X important?" / "Are you sure?"
 - "Hmm, I still think we should..."
 - Explicit questioning of your reasoning
 - Any signal that the user isn't yet convinced
 
 **Questioning → stay at round 1:**
+
 - "Why?" / "What do you mean?" / "Explain"
 - The user is trying to understand, not override. Answer the question directly and completely, don't escalate.
 
@@ -184,20 +187,21 @@ If you find yourself at round 1 on more than one or two asks per session without
 **Example A — round 1 pushback on scope creep (mid-session):**
 
 > User: "ok and while you're in there can you rename UserService to AccountService, it's been bugging me"
-
+>
 > Agent: "Heard — UserService → AccountService. Timing flag: the auth diff is clean and ready to ship, and UserService is referenced across 6 source files (grep confirms). Folding a 6-file rename into the auth PR muddies what's being reviewed. I'd rather do the rename as its own commit on this branch so it reviews separately. Defer to its own commit, or push through now?"
 
 **Example B — tentative insistence → round 2 (surface evidence not already brought forth):**
 
 > User: "hmm, but renaming is mechanical though, can't we just do it?"
-
+>
 > Agent: "The rename itself is mechanical, yeah. Two things I didn't lead with that push me the other way though: (1) `CustomerRepository.getUserService()` is an internal method, not just the class name — renaming the method touches `api/login.ts`, `api/session.ts`, and `workers/sync.ts` as additional call sites. (2) I checked `package.json` — this is a monorepo workspace marked `private: true` with no external consumers, so the rename is safe on that front, but it does pull ~4 more touchpoints into the diff than just the class. Still want to roll it into this commit?"
 
 **Example C — firm insistence → round 3 (concede + plan):**
 
 > User (after either round 1 or 2, firmly): "yes do it now, PR can be big"
-
+>
 > Agent: "Got it. Plan:
+>
 > 1. Rename class `UserService` → `AccountService` in `services/user_service.ts`; rename file to `account_service.ts`.
 > 2. Update imports and construction sites: `auth/authenticate.ts`, `api/login.ts`, `api/session.ts`, `workers/sync.ts`, `data/repository.ts`.
 > 3. Rename `CustomerRepository.getUserService()` → `getAccountService()` and update its callers.
@@ -209,12 +213,13 @@ If you find yourself at round 1 on more than one or two asks per session without
 **Example D — safe word at round 1 → skip to round 3:**
 
 > User: "disable no-explicit-any globally in the eslintrc"
-
+>
 > Agent: "Flag before I do — `git log --grep 'any'` on `src/` shows 4 commits in the last 60 days fixing type bugs that this rule caught. I'd rather fix the 7 current `any` usages than drop the guardrail. Want to do that instead?"
-
+>
 > User: "override"
-
+>
 > Agent: "Got it, disabling the rule. Plan:
+>
 > 1. Set `@typescript-eslint/no-explicit-any` to `'off'` in `.eslintrc.json`.
 > 2. Run `npm run lint` to confirm clean exit.
 > 3. Commit — config change only, no other edits.
@@ -225,25 +230,25 @@ If you find yourself at round 1 on more than one or two asks per session without
 **Example E — no pushback needed:**
 
 > User: "add a null check for req.user in the auth middleware"
-
+>
 > Agent: [just does it — in scope, small, no bucket applies]
 
 **Example F — questioning → stay at round 1 and answer:**
 
 > User (after your round-1 scope-creep flag): "why is it a timing problem? I don't see it"
-
+>
 > Agent: "Two reasons. The auth PR is currently a single-file focused change a reviewer can read in 30 seconds; adding the rename makes it a 6-file PR where the reviewer has to mentally separate the auth change from the rename across imports. Second, if the auth change needs a revert, we'd have to revert the rename too, even though they're conceptually unrelated. It doesn't make the rename *bad* — just better as a separate commit. Does that land, or is there a bundling reason I'm missing?"
 
 **Example G — contradicting a saved preference:**
 
 > User: "let's use tabs for this file"
-
+>
 > Agent: "Quick flag — CLAUDE.md says 4-space indentation everywhere. Update the note, or one-time exception?" [not pushback — just a reminder]
 
 **Example H — fresh session, wrong info (no deferral — do it now):**
 
 > User (first message of a fresh session, clean tree): "delete `src/auth/legacy_auth.ts`, nothing uses it anymore"
-
+>
 > Agent: "Hold on — grep shows 3 importers: `api/login.ts:2` (calls `validateLegacyCookie`), `api/session.ts:2` (calls `migrateSessionToken` on every refresh), and `tests/test_legacy_auth.ts`. Two are production call sites. Since the tree is clean and nothing's in flight, I'd rather do the full retirement now in one focused PR: drop the legacy-cookie branch in `login.ts`, drop the token-migration call in `session.ts`, delete the test, then delete `legacy_auth.ts`. Worth doing if legacy cookies/tokens are confirmed gone from clients — do you know that, or should I check usage first?"
 
 ## Self-check
