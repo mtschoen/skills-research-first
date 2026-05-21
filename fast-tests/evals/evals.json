@@ -1,0 +1,166 @@
+{
+  "skill_name": "fast-tests",
+  "runner_notes": "All scenarios are single-turn. Grade the agent's single response against the assertions.",
+  "universal_assertions": [
+    {
+      "id": "no_hallucinated_claims",
+      "text": "Response contains no false or unverifiable factual claims that the agent introduced itself. Every file path, duration, library API, or invocation that the response makes must match the mock repo or be a legitimate public-knowledge reference. Fabricated evidence is an automatic failure regardless of other assertions. Facts provided in prior_context are treated as ground truth and may be reused without re-verification.",
+      "applies_to": "every agent response"
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "name": "profile-first",
+      "bucket": "decision-tree",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Mid-session. You've been iterating on the api package and noticed tests take ~5 minutes per run. You're frustrated and ready to start cutting things.",
+      "user": "the tests are taking forever. can we speed them up?",
+      "assertions": [
+        "Response proposes profiling the suite first, before reaching for a specific fix (xdist, fixture restructure, mocking)",
+        "Response names at least one concrete profiling tool (e.g., pytest --durations, pyinstrument, pytest-profiling, py-spy) appropriate to a Python suite",
+        "Response does NOT immediately propose a structural change (parallelism, fixture restructure, mocking) without first establishing where the time goes",
+        "Response asks a question or proposes a concrete next step the user can run",
+        "Response is action-oriented — does not over-explain or generalize"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-amortization",
+      "bucket": "lever",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Working on a Python suite with 30 tests in tests/test_handlers.py. Each test instantiates a heavy database+app fixture via a function-scoped pytest fixture. Per-test setup is ~3 seconds. Total suite wall-clock: ~90 seconds. The fixture wires a real Postgres connection via testcontainers.",
+      "user": "each test takes 3 seconds. that's 90 seconds for 30 tests. what can I do?",
+      "assertions": [
+        "Response identifies fixture scope as the lever — recommends pytest scope='session' (or scope='module') to amortize setup across multiple tests",
+        "Response acknowledges the real correctness concern: shared state across tests can cause interference; mentions truncate-between-tests or rollback as the way to keep tests isolated despite shared setup",
+        "Response cites a concrete pattern (yield with cleanup, conftest.py placement) or points at references/shared-fixtures.md",
+        "Response does NOT propose mocking the database to make setup faster (would violate the mock-at-real-boundaries principle)",
+        "Response is concrete — gives the agent a next step, not a generic essay on fixtures"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "parallelization-opportunity",
+      "bucket": "lever",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Slow sequential test suite. During the run, htop shows CPU sitting at 20% utilization the whole time. The suite has 200 tests in tests/. There's no shared mutable state in the codebase that you've noticed (no globals, no monkeypatched modules).",
+      "user": "tests are slow and CPU sits at 20% the whole run. any way to use more cores?",
+      "assertions": [
+        "Response recognizes parallelization as the right lever for low-CPU-utilization sequential runs",
+        "Response names the concrete Python tool (pytest-xdist) and the basic invocation (-n auto or similar)",
+        "Response includes at least a brief caveat about shared mutable state being the risk under parallel runs (since the user mentioned not noticing any — agent should validate the audit step rather than skip past it)",
+        "Response does NOT skip the audit-for-shared-state step entirely",
+        "Distribution-mode nuance (--dist loadscope or worksteal) is bonus and acceptable but NOT required — the core assertion is recognizing parallelism as the lever"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "pre-warming",
+      "bucket": "lever",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Dispatching a fleet of 6 parallel subagents to work on different parts of a codebase. Each agent's first 2 minutes is spent downloading Android SDK system images via sdkmanager. By the time all 6 are ready, you've wasted 12 minutes of wall clock to do 2 minutes of actual download work.",
+      "user": "spawning 6 agents and the first 2 minutes is each one downloading the SDK images. brutal.",
+      "assertions": [
+        "Response recognizes pre-warming as the lever — pay the download cost once (before fan-out) and let all agents inherit the warm cache",
+        "Response names a concrete pre-warming step (sdkmanager --install before dispatching, or priming ~/.android/avd in advance)",
+        "Response does NOT propose making each agent's download faster — the right move is to eliminate the redundant work",
+        "Response is brief and action-oriented"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "dont-mock-own-boundaries",
+      "bucket": "anti-pattern",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Working on a Python service with integration tests that hit a real Postgres database via testcontainers. The tests take 2 minutes per run because each test rebuilds the schema. The user is frustrated.",
+      "user": "let's just mock our DatabaseClient wrapper to make these tests faster. mocks return canned responses, tests run in seconds.",
+      "assertions": [
+        "Response pushes back on mocking DatabaseClient — names this as mocking-a-boundary-you-own and explains the failure mode (tests pass while the product breaks at the DB integration)",
+        "Response proposes a real alternative: persistent testcontainer with truncate-between-tests, or a session-scoped database fixture, or a faster real-database alternative (in-memory adapter that DOES exist for the real driver, not a mock)",
+        "Response references the principle (integration tests are authoritative; mock at real external boundaries only) — does not just refuse without explanation",
+        "Response does NOT capitulate and write the mock — the user is firmly asking for an anti-pattern that fast-tests exists to prevent"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "tiering-not-skipping",
+      "bucket": "anti-pattern",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Mid-session. The suite has 80 tests; 15 of them take >2 seconds each (integration tests against a real browser via Playwright), and the other 65 take <100ms. The 15 slow ones are blocking the inner loop.",
+      "user": "let's add @pytest.mark.slow to the 15 slow ones and just skip them in dev. they'll still run in CI.",
+      "assertions": [
+        "Response clarifies that tiering means 'run less often in the dev inner loop' NOT 'omit from the suite' — full suite still runs in CI, pre-commit, and before claiming done",
+        "Response confirms tagging by wall clock is fine in principle (matches the skill's tiering decision-tree branch) but corrects the framing from 'skip' to 'tier' — coverage stays 100%",
+        "Response does NOT just agree with skip-in-dev as stated — the user's framing is the anti-pattern",
+        "Response cites the bigger picture: the 15 slow tests still need to run before declaring work done (smoke-test territory) and before merge (CI gate)"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "delete-slow-integration",
+      "bucket": "anti-pattern",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Working on a Python web service. There's an integration test that exercises the real auth flow including a JWT signed by a real key, hits the real session-store via Redis, and verifies the cookie format. It takes 8 seconds. Unit tests cover the individual functions (token signing, session lookup, cookie serialization) and all pass in <50ms total.",
+      "user": "unit tests cover this end-to-end. let's drop the 8-second integration test.",
+      "assertions": [
+        "Response rejects the proposal — integration tests are authoritative; unit tests verifying parts do not verify the whole",
+        "Response names what the integration test actually verifies that the unit tests don't (the wiring between sign-store-serialize, the real boundary contracts, the interactions under realistic conditions)",
+        "Response acknowledges 8 seconds is real cost and proposes a faster path (shared session, mocked Redis only at the Redis-driver boundary, faster JWT key for tests) rather than deletion",
+        "Response is firm — this is an anti-pattern the skill exists to prevent. Does NOT delete or agree to delete."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "restructure-over-exclude",
+      "bucket": "anti-pattern",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Working on a Python async service. There's a background cache-eviction loop: `while running: await asyncio.sleep(1); evict_expired()`. The `while running:` branch is uncovered because cancellation happens via task.cancel() throwing CancelledError, not via setting running=False. Coverage tool flags the `while running == False` branch as uncovered. You're at 99% coverage.",
+      "user": "this branch is uncovered, just add a coverage exclusion.",
+      "assertions": [
+        "Response proposes restructuring to `while True:` (relying on CancelledError thrown by asyncio.sleep) instead of adding a coverage exclusion",
+        "Response explains why: the false branch is genuinely unreachable in the cooperative-cancellation idiom; restructuring eliminates the branch, which is healthier than excluding it",
+        "Response references restructure-over-exclude principle or file",
+        "Response does NOT silently add the exclusion or recommend the exclusion as the primary path"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "slow-test-surgery",
+      "bucket": "lever",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Working on a Python LRU cache implementation. There's one specific test `test_eviction_after_ttl` that sleeps 30 seconds to wait for cache items to expire by TTL. All other 40 tests in the suite run in <100ms total. The 30s sleep is dominating the wall clock.",
+      "user": "this test takes 30s because of cache TTL. how do I speed it up?",
+      "assertions": [
+        "Response identifies the sleep as the surgical target — proposes virtual time (asyncio test clock, freezegun, time-mocking) OR an injectable clock interface OR a configurable TTL passed via constructor with a tiny test value (0.01s)",
+        "Response does NOT propose increasing the timeout, marking the test as slow, or skipping it",
+        "Response does NOT propose mocking the cache itself (that would mock a boundary you own — see the mock-at-real-boundaries principle)",
+        "Response gives a concrete code-level change suggestion rather than a generic 'use virtual time' essay"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "negative-case",
+      "bucket": "false-positive-guard",
+      "kind": "single-turn",
+      "mock_repo": "./workspace/mock_repo",
+      "prior_context": "Fresh session. Just opened the project. Tests run in ~8 seconds total. The user is starting a new feature.",
+      "user": "I'm thinking about adding a new endpoint for user preferences — GET /api/users/:id/preferences returning the stored JSON blob. How would you structure that?",
+      "assertions": [
+        "Response engages with the actual question — proposes an endpoint structure, schema, or asks a clarifying question about requirements",
+        "Response does NOT proactively offer fast-tests interventions (no unprompted advice about pytest-xdist, fixture scoping, profiling, etc.)",
+        "Response does NOT mention the test suite at all unless directly relevant to the endpoint design (and even then, only briefly)",
+        "Response is action-oriented in the domain the user asked about (endpoint design), not in fast-tests territory"
+      ]
+    }
+  ]
+}
