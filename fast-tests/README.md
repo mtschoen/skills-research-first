@@ -18,7 +18,7 @@ Via the skills-dev installer (clone [skills-dev](https://github.com/mtschoen/ski
 install-skills.bat -y fast-tests
 ```
 
-Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `references/` + `README.md` and excludes development-only files (`HANDOFF.md`, `evals/`, `workspace/`, `LICENSE`).
+Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `references/` and excludes development-only files (this `README.md`, `HANDOFF.md`, `LICENSE`, `evals/`, `workspace/`). The agent loads `SKILL.md` from the install location; this README is for human readers browsing the repo.
 
 ## Layout
 
