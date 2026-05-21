@@ -1,0 +1,8 @@
+[project]
+name = "mock-api-service"
+version = "0.1.0"
+description = "Canned slow test suite for fast-tests eval scenarios — not meant to run."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
