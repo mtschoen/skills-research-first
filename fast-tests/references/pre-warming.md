@@ -29,6 +29,7 @@ A single warm-up invocation downloads all dependencies and wrapper binaries:
 ```
 
 Key cache directories:
+
 - `~/.gradle/caches` — downloaded artifacts and compiled build scripts.
 - `~/.gradle/wrapper/dists` — Gradle wrapper binaries.
 

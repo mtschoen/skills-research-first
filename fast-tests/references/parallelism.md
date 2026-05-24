@@ -41,7 +41,8 @@ Mitigation: use a file lock to ensure only one worker performs the expensive ini
 ```
 
 Or set permanently in `gradle.properties`:
-```
+
+```properties
 org.gradle.parallel=true
 ```
 

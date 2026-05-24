@@ -8,13 +8,13 @@ Two hours guessing at parallelism or fixture restructuring without a profile alm
 
 **`pytest --durations=N`** — built-in slowest-N report. No install required.
 
-```
+```bash
 pytest --durations=20
 ```
 
 Output shows phase per test (`setup`, `call`, `teardown`). If setup dominates, see `shared-fixtures.md`. If a single `call` entry dominates, investigate that test body.
 
-```
+```text
 slowest 20 durations
 8.43s setup    tests/test_api.py::test_full_stack
 3.12s call     tests/test_import.py::test_heavy_module
