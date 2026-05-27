@@ -18,7 +18,7 @@ Via the skills-dev installer (clone [skills-dev](https://github.com/mtschoen/ski
 install-skills.bat -y fast-tests
 ```
 
-Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `references/` and excludes development-only files (this `README.md`, `HANDOFF.md`, `LICENSE`, `evals/`, `workspace/`). The agent loads `SKILL.md` from the install location; this README is for human readers browsing the repo.
+Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `references/` and excludes development-only files (this `README.md`, `LICENSE`, `evals/`, `workspace/`). The agent loads `SKILL.md` from the install location; this README is for human readers browsing the repo.
 
 ## Layout
 
@@ -26,7 +26,6 @@ Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `r
 fast-tests/
   SKILL.md                          principles, decision tree, rationalization table
   README.md                         this file
-  HANDOFF.md                        original briefing (kept for posterity)
   references/
     profiling.md                    where the time goes
     parallelism.md                  pytest-xdist, gradle parallel, xUnit collections
