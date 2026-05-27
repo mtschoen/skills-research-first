@@ -16,9 +16,6 @@ When network access is intermittent, pre-build a local wheel cache with `pip whe
 and install from it with `pip install --no-index --find-links ./wheels -r requirements.txt`.
 This eliminates the network round-trip entirely on warm runs.
 
-TODO: project-specific concrete steps (which packages benefit most, how to verify the cache hit) —
-fill in when the first liminal-style project surfaces a real example.
-
 ## JVM
 
 Pre-populate the Gradle cache before dispatching parallel agents.
@@ -43,9 +40,6 @@ sdkmanager --install "system-images;android-34;default;x86_64"
 Run this once, before fan-out, on the machine or in the CI layer.
 The emulator itself (`emulator -avd <name> -no-window`) can then start without triggering any further SDK fetches.
 
-TODO: concrete per-project warmup script — fill in when a JVM project surfaces specific packages
-or emulator configurations that benefit from staged pre-warming.
-
 ## .NET
 
 Run `dotnet restore` once at the workspace root before fan-out.
@@ -59,6 +53,3 @@ dotnet restore
 The NuGet HTTP source is only contacted when a package version is absent from the global cache.
 For CI layers or isolated machines, use `dotnet restore --packages ./local-nuget` to redirect to
 a directory that can be restored from a cache artifact.
-
-TODO: concrete sequencing for monorepos with shared package sets — fill in when a multi-project
-.NET solution surfaces ordering dependencies or cache-miss patterns worth documenting.

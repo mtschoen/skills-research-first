@@ -35,15 +35,11 @@ A `while running:` loop with a separate `running = False` cancellation signal ha
 uncovered-false-branch shape as the Kotlin example above.
 Restructure to `while True:` and let `CancelledError` propagate.
 
-TODO: concrete before/after restructure example — fill in when a real project surfaces this pattern.
-
 ## .NET
 
 `CancellationToken.ThrowIfCancellationRequested()` inside `while (true)` is the .NET equivalent.
 The same restructure applies: replace `while (!token.IsCancellationRequested)` with `while (true)`
 and let the exception exit the loop.
-
-TODO: concrete before/after restructure example — fill in when a .NET project surfaces this pattern.
 
 ## The legitimate exclusion case
 

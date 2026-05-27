@@ -31,9 +31,6 @@ addopts = "-m 'not slow'"
 Decorate tests above threshold, re-run with the fast filter to confirm.
 Re-measure periodically — slow tests creep in silently.
 
-TODO: automated re-tiering script (parses `--durations=0` output, updates marks) — fill in when a project
-accumulates enough tests to make manual re-tiering tedious.
-
 ## JVM
 
 **Tag slow tests** with JUnit 5's `@Tag("slow")` on test classes or methods.
@@ -54,9 +51,6 @@ tasks.test {
 **Separate task for the slow tier:** `tasks.register<Test>("slowTest") { useJUnitPlatform { includeTags("slow") } }`.
 Run `./gradlew slowTest` in CI and before claiming done to cover the full suite.
 
-TODO: per-project threshold convention — fill in when a JVM project surfaces a distribution
-that suggests a threshold other than 500ms.
-
 ## .NET
 
 **Tag slow tests** with xUnit's `[Trait]`:
@@ -73,6 +67,3 @@ dotnet test --filter "Category!=Slow"
 ```
 
 **Full suite run** (CI and before claiming done): `dotnet test`.
-
-TODO: integration with the per-repo coverage gate (see `maintaining-full-coverage`) — fill in
-when a .NET project needs the slow tier wired into the coverage report to avoid false-green gates.
