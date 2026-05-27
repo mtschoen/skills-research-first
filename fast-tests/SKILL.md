@@ -34,8 +34,8 @@ This skill is about the inner loop only. Explicit scope boundaries:
 - **Post-change verification** — confirming a change works before claiming done:
   that's `smoke-test`.
 - **Hardware-bound platform code** that is genuinely untestable without physical devices or elevated
-  privileges and has no viable mock path: escalate via `escalate-over-improvise` (handoff exists,
-  not yet built). Don't improvise a test-skipping shortcut.
+  privileges and has no viable mock path: escalate via `escalate-over-shortcut`.
+  Don't improvise a test-skipping shortcut.
 - **CI parallelism and sharding strategy** — this skill focuses on the developer inner loop.
   CI implications surface in the references where relevant, but CI architecture is out of scope here.
 
@@ -219,7 +219,7 @@ No overlap.
 Both share the underlying premise that tests passing ≠ product working unless the tests are
 actually exercising the product.
 
-**`escalate-over-improvise`** (handoff exists, not yet built) — partner skill for when no
+**`escalate-over-shortcut`** — partner skill for when no
 fast-tests lever fits.
 If you find yourself reaching for `[ExcludeFromCodeCoverage]` on a slow class, hard-coding an
 emulator-specific shortcut, or swapping a real component for a mock just to skip its startup cost,

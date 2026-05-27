@@ -60,5 +60,5 @@ See `references/tiering.md`.
 
 Dropping a coverage threshold, a timeout, or a quality bar to dodge a slow test or a flaky behavior is changing the test to match the bug.
 Cue: a PR lowers `--cov-fail-under`, raises a timeout constant, or adds `[ExcludeFromCodeCoverage]` without a documented reason.
-Right move: escalate via `escalate-over-improvise` (handoff exists, not yet built) and fix the underlying issue rather than ship the workaround.
+Right move: escalate via `escalate-over-shortcut` and fix the underlying issue rather than ship the workaround.
 The gate exists to tell the truth; weakening it means you're paying to hear less truth.

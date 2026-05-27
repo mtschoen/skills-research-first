@@ -47,7 +47,7 @@ Each reference holds Python / JVM / .NET sub-sections. Agents navigate by topic 
 
 - [`maintaining-full-coverage`](https://github.com/mtschoen/skills-maintaining-full-coverage) — orthogonal axis. Speed never licenses skipping tests.
 - [`smoke-test`](https://github.com/mtschoen/skills-smoke-test) — orthogonal layer. Outer-loop verify vs. inner-loop wall clock.
-- `escalate-over-improvise` (handoff exists, not yet built) — partner skill for when no fast-tests lever fits and the temptation is to ship a hack.
+- [`escalate-over-shortcut`](https://github.com/mtschoen/skills-escalate-over-shortcut) — partner skill for when no fast-tests lever fits and the temptation is to ship a hack.
 - `superpowers:test-driven-development` — upstream. Fast-tests assumes tests exist.
 
 ## License
