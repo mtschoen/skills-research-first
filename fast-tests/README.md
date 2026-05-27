@@ -35,7 +35,6 @@ fast-tests/
     pre-warming.md                  cache priming
     process-cleanup.md              snapshot-then-kill-tree + ppid tracking
     tiering.md                      wall-clock-based tagging
-    restructure-over-exclude.md     reshape code, don't add coverage exclusions
     pitfalls.md                     cross-cutting anti-patterns
   evals/                            pushback-style eval harness (dev-only)
   workspace/                        eval scratch + canned mock_repo (dev-only)

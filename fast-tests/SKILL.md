@@ -116,8 +116,8 @@ fixture setup, teardown, or body.
 
 If none of these branches fits and the slowness seems structural — the code's design makes cheap
 testing impossible without touching the assertions — the solution is to restructure the production
-code, not to exclude tests or weaken assertions.
-See `references/restructure-over-exclude.md`.
+code, not to exclude tests or weaken assertions (Principle 5).
+The coverage-side detail — restructuring away exclusions and unreachable branches — lives in `maintaining-full-coverage`.
 
 ## Principles
 
@@ -198,7 +198,6 @@ The test passes because the mock says it passes, not because the product works.
 - `references/pre-warming.md` — Cache priming so fan-outs don't cold-start.
 - `references/process-cleanup.md` — Snapshot-then-kill-tree on Windows; ppid tracking on Unix.
 - `references/tiering.md` — Wall-clock-based tagging, NOT unit-vs-integration.
-- `references/restructure-over-exclude.md` — Reshape code to eliminate unreachable branches.
 - `references/pitfalls.md` — Cross-cutting anti-patterns to recognize and avoid.
 
 ## Integration notes
@@ -207,7 +206,7 @@ The test passes because the mock says it passes, not because the product works.
 Speed never licenses skipping tests.
 *Tiering* means "run less often in the dev inner loop," never "omit from the suite" — the full
 suite still runs in CI, pre-commit, and before claiming done; coverage stays 100%.
-Both skills agree on restructure-over-exclude.
+Both skills agree on restructure-over-exclude — `maintaining-full-coverage` carries the worked examples.
 Both reject mocking-owned-boundaries.
 If speed pressure is eroding coverage, that's a `maintaining-full-coverage` event, not a
 fast-tests trade-off.
