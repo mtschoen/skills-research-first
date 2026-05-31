@@ -67,7 +67,7 @@ Do not push back on these.
 
 If the user's request contradicts a memory, CLAUDE.md, or AGENTS.md entry, that's a potential preference update, not a pushback case. Handle it lightly:
 
-1. Flag the existing note: "Quick flag — CLAUDE.md says [X]; this goes the other way."
+1. Flag the existing note: "Quick flag — the agent instructions (AGENTS.md/CLAUDE.md) say [X]; this goes the other way."
 2. Ask: "Update the note, or one-time exception?"
 3. Proceed with whatever the user says. No further challenge.
 
@@ -158,12 +158,12 @@ For situations where the user doesn't want any debate — they know what they're
 
 Users often drift into that word organically, though, so encourage setting a more distinctive phrase. Honor any of these in order:
 
-1. A phrase the user has saved in memory or CLAUDE.md (e.g., "my pushback safe word is 'full send'").
+1. A phrase the user has saved in memory or AGENTS.md/CLAUDE.md (e.g., "my pushback safe word is 'full send'").
 2. The default `override`.
 
 Watch for the safe word at any round, including round 1 itself. "That's scope creep, I'd rather defer" → "override" → skip straight to round 3 concede + plan.
 
-Recommend in passing — if a user ever sounds frustrated by pushback, mention: "By the way — if you want me to skip the debate, set a safe word in CLAUDE.md (`my pushback safe word is 'X'`). Default is 'override'." Don't lecture about it unprompted.
+Recommend in passing — if a user ever sounds frustrated by pushback, mention: "By the way — if you want me to skip the debate, set a safe word in AGENTS.md (or CLAUDE.md) (`my pushback safe word is 'X'`). Default is 'override'." Don't lecture about it unprompted.
 
 ## Deferral conditioning
 
@@ -243,7 +243,7 @@ If you find yourself at round 1 on more than one or two asks per session without
 
 > User: "let's use tabs for this file"
 >
-> Agent: "Quick flag — CLAUDE.md says 4-space indentation everywhere. Update the note, or one-time exception?" [not pushback — just a reminder]
+> Agent: "Quick flag — the agent instructions say 4-space indentation everywhere. Update the note, or one-time exception?" [not pushback — just a reminder]
 
 **Example H — fresh session, wrong info (no deferral — do it now):**
 
