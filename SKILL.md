@@ -39,7 +39,14 @@ Most questions are a mix; when in doubt, do the web search too.
 - **Listing search terms does not count.** "I would search for X" is the
   failure mode this guards against. Run the tool.
 - **Already searched this session?** That's the one valid skip — don't
-  re-run the same query you already ran this session.
+  re-run the *same* query you already ran this session. But the skip is
+  **per-question, not per-session**: when you shift to a new topic or a new
+  sub-decision, earlier searches on the prior topic do **not** discharge the
+  obligation. Example (real): a search on "WGC behavior for minimized
+  windows" does not cover the later, distinct decision "which event API
+  detects a stalled capture" — that's a fresh design choice and owes its own
+  search. Treat a topic/sub-decision shift as re-arming the rule, even mid-
+  session, even right after a related search.
 
 ## Why this is a default-on nudge
 
