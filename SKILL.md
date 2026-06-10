@@ -3,7 +3,7 @@ name: research-first
 description: Use before designing, planning, writing custom code, refactoring/extracting code, choosing a tool/library/protocol, or debugging an unfamiliar error. Steers toward running a WebSearch (or Read/Grep for codebase-only questions) BEFORE acting on a decision, instead of inferring from training data. Fires on decisions the agent faces, not on user narration of what they are about to do.
 ---
 
-# research-first — search before you decide
+# research-first - search before you decide
 
 Your training data is stale and lossy. For most design and tooling
 decisions there is a maintained library, an official doc, or a recent
@@ -12,7 +12,7 @@ up first" the default reflex at the exact moments it matters.
 
 ## The rule
 
-Before any of these, run a search **first** — execute the tool, don't
+Before any of these, run a search **first** - execute the tool, don't
 just narrate what you'd look for:
 
 - **Designing or planning** an approach to a non-trivial problem.
@@ -22,7 +22,7 @@ just narrate what you'd look for:
 - **Debugging an unfamiliar error** (a message/stack you don't already
   recognize from this session).
 
-Default to **WebSearch** — most design questions have an external
+Default to **WebSearch** - most design questions have an external
 component (a better library exists, an API changed, a known footgun).
 Use **Read/Grep instead** only when the question is *purely* about this
 codebase (e.g. "where is X defined here", "what does our wrapper do").
@@ -38,13 +38,13 @@ Most questions are a mix; when in doubt, do the web search too.
   rather than *asking how*, take it as a given and move on.
 - **Listing search terms does not count.** "I would search for X" is the
   failure mode this guards against. Run the tool.
-- **Already searched this session?** That's the one valid skip — don't
+- **Already searched this session?** That's the one valid skip - don't
   re-run the *same* query you already ran this session. But the skip is
   **per-question, not per-session**: when you shift to a new topic or a new
   sub-decision, earlier searches on the prior topic do **not** discharge the
   obligation. Example (real): a search on "WGC behavior for minimized
   windows" does not cover the later, distinct decision "which event API
-  detects a stalled capture" — that's a fresh design choice and owes its own
+  detects a stalled capture" - that's a fresh design choice and owes its own
   search. Treat a topic/sub-decision shift as re-arming the rule, even mid-
   session, even right after a related search.
 
@@ -55,7 +55,7 @@ stale, reinvented, or subtly-wrong work. The cost of one redundant search
 is a few seconds; the cost of a skipped one is building the wrong thing
 on outdated assumptions. So the reminder fires on **every** user prompt
 (see `hooks/prompt-reminder.sh`) and you self-police the "already searched"
-skip — the hook stays deliberately simple rather than trying to detect
+skip - the hook stays deliberately simple rather than trying to detect
 prior searches.
 
 ## Examples
