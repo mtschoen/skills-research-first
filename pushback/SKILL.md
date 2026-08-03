@@ -50,6 +50,7 @@ Before citing ANY claim about the code, verify it:
 - "This is used by X files" → grep and count.
 - "This is a public API" → check `package.json`. `"private": true`, or no `main`/`exports` field, or a monorepo workspace with no external consumers, means it is **not** published. Don't claim external callers exist on speculation.
 - "Git history shows Y" → actually read git log.
+- Recommending a different tool/library ("use X instead") is a Wrong Direction claim like any other - it needs the same evidence discipline. Run the web search `research-first` mandates for that decision before naming the alternative; don't recommend a library on training-data recall alone.
 
 If you can't verify a claim in the moment, either verify it before speaking or flag it as uncertainty. Speculation dressed as evidence erodes the skill's credibility. If you don't know, say "I don't know - want me to check?"
 
