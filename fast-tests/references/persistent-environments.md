@@ -57,7 +57,7 @@ Tests connect via env-var DSN; no container lifecycle inside the test code.
 
 ## JVM
 
-**Persistent Android Virtual Device** — the WindowStream lesson: a persistent AVD beats Gradle Managed Devices for inner-loop speed. GMD cold-boots an emulator per run (~2–3 minutes); a pre-running AVD takes 0 seconds because it's already up.
+**Persistent Android Virtual Device** — the lesson from a streaming-app test suite: a persistent AVD beats Gradle Managed Devices for inner-loop speed. GMD cold-boots an emulator per run (~2-3 minutes); a pre-running AVD takes 0 seconds because it's already up.
 
 ```bash
 # Start once at the beginning of a dev session
