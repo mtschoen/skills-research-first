@@ -1,3 +1,4 @@
-# Local eval workspace: mock repo, iteration outputs, grading logs, handoff.
-# Not versioned — each machine/user regenerates iteration artifacts locally.
+# Local eval workspace. workspace/mock_repo is a committed fixture that
+# evals.json depends on - see workspace/.gitignore for what stays untracked
+# (iteration run outputs and grading logs).
 workspace/
