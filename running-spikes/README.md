@@ -12,7 +12,7 @@ See [SKILL.md](./SKILL.md) for the full skill text.
 
 ## Conventions
 
-- **Repo name:** `skills-running-spikes` on both Gitea (`schoen/`) and GitHub (`mtschoen/`).
+- **Repo name:** `skills-running-spikes` on GitHub (`mtschoen/`).
 - **Submodule path** in skills-dev: `running-spikes/`.
 - **Workspace** for eval iteration lives at `running-spikes/workspace/`, gitignored.
 - **License:** MIT (inherits from skills-dev).
