@@ -1,0 +1,21 @@
+{
+  "name": "@internal/auth-api",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Internal authentication and session-management service. Not published externally — consumed only by other services in the company monorepo via workspace references.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/ tests/",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "eslint": "^8.50.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0"
+  }
+}
