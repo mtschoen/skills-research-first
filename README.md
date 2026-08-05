@@ -19,13 +19,13 @@ writing custom code, refactoring, or debugging an unfamiliar error.
 `install-skills.{sh,bat}` (in the skills-dev umbrella) ships `SKILL.md`
 plus the `hooks/` dir (declared in `.skillpack`) into
 `~/.agents/skills/research-first/` (or wherever your agent harness reads
-skills from - e.g. `~/.claude/skills/` for Claude Code).
+skills from).
 
 The `hooks/prompt-reminder.sh` script is Claude Code-specific: it speaks
 the `UserPromptSubmit` hook protocol, which is a Claude Code mechanism
 with no equivalent in this repo for other harnesses. On Claude Code, the
-hook is **not** auto-wired - like every skill hook, add it to
-`~/.claude/settings.json` under `UserPromptSubmit` manually:
+hook is **not** auto-wired - like every skill hook, register it in the
+agent's settings under `UserPromptSubmit` manually:
 
 ```json
 {
