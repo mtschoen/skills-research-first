@@ -1,6 +1,6 @@
 # fast-tests
 
-An agent skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test — and never replace integration tests with unit-level mocks that pretend to verify behavior.
+A skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test — and never replace integration tests with unit-level mocks that pretend to verify behavior.
 
 ## What it does
 
