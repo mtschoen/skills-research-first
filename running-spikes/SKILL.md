@@ -5,6 +5,12 @@ description: "Use when about to do extended Read/Grep/thinking on a question who
 
 # Running Spikes
 
+> **A note on paths:** this skill stores scratch dirs and notes under `.claude/spikes/` and
+> `~/.claude/notes/`, following Claude Code's file layout (its home config directory is
+> `~/.claude/`). That is a genuine Claude Code-specific convention. If running this skill under
+> a different agent harness, substitute that harness's own equivalent home/config directory
+> wherever `~/.claude/` or `.claude/` appears below.
+
 ## Why this skill exists
 
 The agent's default is to read more, search more, think more - even when running code would resolve the question in five minutes. That habit costs sessions: long Read/Grep loops produce confidence-without-evidence, and architectural decisions get made on training-data hunches that fall over on first contact with the actual system.
@@ -23,7 +29,7 @@ Fires when the agent catches itself reaching for one of these defaults:
 
 …AND the question is about **observable behavior of an external system** (library, framework, runtime, host environment, third-party API) AND a small experiment could produce a definitive answer.
 
-(Web-search is a natural fourth signal but is parked - the project's UserPromptSubmit hook actively pushes Claude toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now.)
+(Web-search is a natural fourth signal but is parked - the project's UserPromptSubmit hook (a Claude Code-specific hook mechanism) actively pushes the agent toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now.)
 
 ## The four suppression gates
 
