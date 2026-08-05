@@ -1,6 +1,6 @@
 # skills-research-first
 
-"Search before you decide" - an agent skill plus a Claude Code-specific
+"Search before you decide" - a skill plus a Claude Code-specific
 `UserPromptSubmit` hook that nudges the agent to run a WebSearch (or
 Read/Grep for codebase-only questions) before designing, choosing a tool,
 writing custom code, refactoring, or debugging an unfamiliar error.
