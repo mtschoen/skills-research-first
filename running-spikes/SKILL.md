@@ -1,15 +1,9 @@
 ---
 name: running-spikes
-description: "Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime - prefer learning from running code in a scratch dir over inferring from docs. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked (check ~/.claude/notes/spike_*.md first). Fires phase-agnostically - during brainstorming, plan-writing, AND mid-implementation."
+description: "Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime - prefer learning from running code in a scratch dir over inferring from docs. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked (check ~/.agents/notes/spike_*.md first). Fires phase-agnostically - during brainstorming, plan-writing, AND mid-implementation."
 ---
 
 # Running Spikes
-
-> **A note on paths:** this skill stores scratch dirs and notes under `.claude/spikes/` and
-> `~/.claude/notes/`, following Claude Code's file layout (its home config directory is
-> `~/.claude/`). That is a genuine Claude Code-specific convention. If running this skill under
-> a different agent harness, substitute that harness's own equivalent home/config directory
-> wherever `~/.claude/` or `.claude/` appears below.
 
 ## Why this skill exists
 
@@ -29,7 +23,7 @@ Fires when the agent catches itself reaching for one of these defaults:
 
 …AND the question is about **observable behavior of an external system** (library, framework, runtime, host environment, third-party API) AND a small experiment could produce a definitive answer.
 
-(Web-search is a natural fourth signal but is parked - the project's UserPromptSubmit hook (a Claude Code-specific hook mechanism) actively pushes the agent toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now.)
+(Web-search is a natural fourth signal but is parked - the project's prompt-submit hook (registered in the agent's settings) actively pushes the agent toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now.)
 
 ## The four suppression gates
 
@@ -37,7 +31,7 @@ Before firing, silently answer. If any is "yes," don't spike - fall back to the 
 
 1. **Is this about THIS codebase?** → Read the code or write a test against it. Spike scope is for external/unknown systems.
 2. **Is the answer subjective / a design opinion?** → No experiment can resolve "which feels nicer." Reason it out.
-3. **Have I (or have past sessions) already spiked this?** → Check `~/.claude/notes/spike_registry.md` first, then glob `~/.claude/notes/spike_*.md`. If found, cite and skip.
+3. **Have I (or have past sessions) already spiked this?** → Check `~/.agents/notes/spike_registry.md` first, then glob `~/.agents/notes/spike_*.md`. If found, cite and skip.
 4. **Did the user just say "just answer"?** → Last-message override beats the skill.
 
 Note: "authoritative docs exist" is deliberately NOT a suppression gate. Even when docs exist, prefer running code to reading. Reinforces the bias toward action.
@@ -52,7 +46,7 @@ The boundary is **"does it leave artifacts beyond a single scratch file?"**
 - REPL-style probes (`python -i`, `dotnet fsi`)
 - `curl` against a known endpoint
 - `<tool> --help` / version checks
-- A single file in `.claude/spikes/<slug>/probe.py` (the dir itself is the only filesystem footprint)
+- A single file in `.agents/spikes/<slug>/probe.py` (the dir itself is the only filesystem footprint)
 
 Heads-up format - one line, then go:
 
@@ -67,14 +61,14 @@ Heads-up format - one line, then go:
 
 Ask format:
 
-> "I want to spike on X. Best path is `dotnet new console` in `.claude/spikes/x/` then add SomeThing. ~3 minutes, leaves a scratch dir. OK to proceed?"
+> "I want to spike on X. Best path is `dotnet new console` in `.agents/spikes/x/` then add SomeThing. ~3 minutes, leaves a scratch dir. OK to proceed?"
 
 ## Scratch directory
 
 **Location precedence:**
 
-1. If cwd is a git repo → `.claude/spikes/<slug>/` in repo root, gitignored. Skill adds `.claude/spikes/` to `.gitignore` if missing (one-line in-place change, bundled into the spike setup).
-2. Otherwise → `~/.claude/spikes/<slug>/`.
+1. If cwd is a git repo → `.agents/spikes/<slug>/` in repo root, gitignored. Skill adds `.agents/spikes/` to `.gitignore` if missing (one-line in-place change, bundled into the spike setup).
+2. Otherwise → `~/.agents/spikes/<slug>/`.
 
 **Slug:** kebab-case, 2–4 words. `httpx-redirect-schemes`, `unity-batch-mode-exit-codes`. On collision (a slug already exists), append a date suffix (e.g., `-20260508`).
 
@@ -84,7 +78,7 @@ Ask format:
 
 ### Per-topic note (always written)
 
-`~/.claude/notes/spike_<slug>.md`:
+`~/.agents/notes/spike_<slug>.md`:
 
 ```markdown
 ---
@@ -108,7 +102,7 @@ The bar is low - it's a breadcrumb for future-you. Always written.
 
 ### Curated registry (sometimes)
 
-`~/.claude/notes/spike_registry.md`:
+`~/.agents/notes/spike_registry.md`:
 
 ```markdown
 # Spike registry
@@ -136,8 +130,8 @@ Not gated on user approval. Cheap, append-only, easy to prune later.
 
 Before firing on a topic, in order:
 
-1. Grep `~/.claude/notes/spike_registry.md` for keywords. Hit → cite the line, follow the link to the per-topic note, skip the spike.
-2. Glob `~/.claude/notes/spike_*.md`. Filename or content match → read the note, skip.
+1. Grep `~/.agents/notes/spike_registry.md` for keywords. Hit → cite the line, follow the link to the per-topic note, skip the spike.
+2. Glob `~/.agents/notes/spike_*.md`. Filename or content match → read the note, skip.
 3. Check earlier turns of this conversation for in-flight findings the user chose not to register.
 4. No hit anywhere → proceed.
 
@@ -147,7 +141,7 @@ When the spike yields keep-able code, present three options:
 
 > "The hello-world is working and matches what your <component> needs. Three options:
 >
-> 1. **Promote** - move `.claude/spikes/<slug>/probe.py` into `<destination-path>` as the foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
+> 1. **Promote** - move `.agents/spikes/<slug>/probe.py` into `<destination-path>` as the foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
 > 2. **Keep iterating** - refine in scratch first.
 > 3. **Leave as scratch** - I have what I need; the spike note is saved.
 >
@@ -174,17 +168,17 @@ All re-engage on promotion.
 
 > User: "I'm thinking about using `httpx` for the new client. Will it follow redirects across http→https and back?"
 >
-> Agent: "I could read docs but the cleanest way to know is to run it. Spiking on httpx redirect behavior - single-file probe at `.claude/spikes/httpx-redirect-schemes/probe.py`, ~30 seconds.
+> Agent: "I could read docs but the cleanest way to know is to run it. Spiking on httpx redirect behavior - single-file probe at `.agents/spikes/httpx-redirect-schemes/probe.py`, ~30 seconds.
 >
 > [runs the probe, observes behavior]
 >
-> Result: with `follow_redirects=True`, httpx follows http→https but NOT https→http by default - security guardrail. To allow it, you build a custom transport. Note saved at `~/.claude/notes/spike_httpx-redirect-schemes.md` and registered (likely to recur). For your client: do you actually need https→http, or is the default safe?"
+> Result: with `follow_redirects=True`, httpx follows http→https but NOT https→http by default - security guardrail. To allow it, you build a custom transport. Note saved at `~/.agents/notes/spike_httpx-redirect-schemes.md` and registered (likely to recur). For your client: do you actually need https→http, or is the default safe?"
 
 **Example B - medium+ spike, ask first (mid-implementation):**
 
 > User: "Add a Cosmos DB persistence layer to the order service."
 >
-> Agent: "Before I wire this in - I want to confirm a few things about partition key constraints and the bulk-execution path before designing the data access layer. Quickest path is `dotnet new console` in `.claude/spikes/cosmos-bulk-partition/` and a 30-line probe against the local emulator. ~5 minutes, leaves a scratch dir. OK?"
+> Agent: "Before I wire this in - I want to confirm a few things about partition key constraints and the bulk-execution path before designing the data access layer. Quickest path is `dotnet new console` in `.agents/spikes/cosmos-bulk-partition/` and a 30-line probe against the local emulator. ~5 minutes, leaves a scratch dir. OK?"
 
 **Example C - suppression: this codebase question (don't spike, read):**
 
@@ -196,13 +190,13 @@ All re-engage on promotion.
 
 > User: "I'm wondering about httpx redirect behavior across schemes."
 >
-> Agent: "Already spiked this on 2026-05-07 - see `~/.claude/notes/spike_httpx-redirect-schemes.md`. TL;DR: `follow_redirects=True` follows http→https but not https→http by default; needs a custom transport for the latter. Working from that, do you want the default or the custom transport?"
+> Agent: "Already spiked this on 2026-05-07 - see `~/.agents/notes/spike_httpx-redirect-schemes.md`. TL;DR: `follow_redirects=True` follows http→https but not https→http by default; needs a custom transport for the latter. Working from that, do you want the default or the custom transport?"
 
 **Example E - promotion offer:**
 
 > Agent (after a spike that yielded a working `redirect_client.py`): "The hello-world is working and matches what your order service needs. Three options:
 >
-> 1. **Promote** - move `.claude/spikes/httpx-redirect-schemes/probe.py` into `src/clients/http_client.py` as the starting foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
+> 1. **Promote** - move `.agents/spikes/httpx-redirect-schemes/probe.py` into `src/clients/http_client.py` as the starting foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
 > 2. **Keep iterating** - refine in scratch first.
 > 3. **Leave as scratch** - I have what I need; the spike note is saved.
 >
@@ -219,7 +213,7 @@ All re-engage on promotion.
 Before announcing a spike, silently answer:
 
 - **Bucket:** is this an *observable behavior* question about an *external* system?
-- **Gates:** did I check all four suppression gates? Specifically, did I grep `~/.claude/notes/spike_*.md` and `spike_registry.md`?
+- **Gates:** did I check all four suppression gates? Specifically, did I grep `~/.agents/notes/spike_*.md` and `spike_registry.md`?
 - **Tier:** small or medium+? Asking when I should ask, announcing-and-going when I should?
 - **Frame:** can I state the spike's question in one concrete sentence? If not, scope is too vague - narrow it before starting.
 
@@ -230,7 +224,7 @@ If any check is "no," reset.
 Before reporting back to the user:
 
 - **Answered the question?** Did the spike actually produce evidence for the original question, or did I drift? If drifted, summarize what was learned but flag the original question is still open.
-- **Wrote the note?** Per-topic file at `~/.claude/notes/spike_<slug>.md` with Question / Answer / Spiked / Existence-proofs.
+- **Wrote the note?** Per-topic file at `~/.agents/notes/spike_<slug>.md` with Question / Answer / Spiked / Existence-proofs.
 - **Applied the razor?** If generally useful, appended a line to `spike_registry.md`.
 - **Offered promotion if relevant?** If the spike code is keep-able and the user would plausibly want it in the project, offered the three-option gate.
 - **Closed out scratch?** Either left it (default) or noted that it's deletable.
@@ -239,7 +233,7 @@ Before reporting back to the user:
 
 - **Spiking on the user's codebase.** "Let me write a quick test to see how their `parseConfig` behaves" - that's READING with extra steps. Just read it.
 - **Spiking to look thorough.** If reading the official docs answers it in one Fetch, do that. The skill's bias toward action is calibrated against a real read-loop, not against five-minute single-page lookups.
-- **Skipping the prior-spike check.** Cross-session memory only works if every spike checks `~/.claude/notes/` first. Re-deriving an answer that's already on disk is wasted session.
+- **Skipping the prior-spike check.** Cross-session memory only works if every spike checks `~/.agents/notes/` first. Re-deriving an answer that's already on disk is wasted session.
 - **Skipping the per-topic note.** Without the note, the next session re-spikes. The note is the value; the scratch code is incidental.
 - **Carrying "sloppy is fine" into promoted code.** Once promotion happens, full discipline re-engages.
 - **Manufacturing "general usefulness" to register every spike.** The registry's value is its curation. If everything is generally useful, nothing is.
