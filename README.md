@@ -1,9 +1,9 @@
 # skills-research-first
 
-"Search before you decide" — a Claude Code skill plus a `UserPromptSubmit`
-hook that nudges the agent to run a WebSearch (or Read/Grep for
-codebase-only questions) before designing, choosing a tool, writing
-custom code, refactoring, or debugging an unfamiliar error.
+"Search before you decide" - an agent skill plus a Claude Code-specific
+`UserPromptSubmit` hook that nudges the agent to run a WebSearch (or
+Read/Grep for codebase-only questions) before designing, choosing a tool,
+writing custom code, refactoring, or debugging an unfamiliar error.
 
 ## What it is
 
@@ -18,9 +18,13 @@ custom code, refactoring, or debugging an unfamiliar error.
 
 `install-skills.{sh,bat}` (in the skills-dev umbrella) ships `SKILL.md`
 plus the `hooks/` dir (declared in `.skillpack`) into
-`~/.claude/skills/research-first/`.
+`~/.agents/skills/research-first/` (or wherever your agent harness reads
+skills from - e.g. `~/.claude/skills/` for Claude Code).
 
-The hook is **not** auto-wired — like every skill hook, add it to
+The `hooks/prompt-reminder.sh` script is Claude Code-specific: it speaks
+the `UserPromptSubmit` hook protocol, which is a Claude Code mechanism
+with no equivalent in this repo for other harnesses. On Claude Code, the
+hook is **not** auto-wired - like every skill hook, add it to
 `~/.claude/settings.json` under `UserPromptSubmit` manually:
 
 ```json
