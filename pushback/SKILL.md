@@ -59,16 +59,16 @@ If you can't verify a claim in the moment, either verify it before speaking or f
 Do not push back on these.
 
 - **Style and preference** - tabs vs. spaces, naming, comment density.
-- **Settled decisions** - if memory, CLAUDE.md, or AGENTS.md records a preference, exercising that preference is not a bad idea.
+- **Settled decisions** - if memory or AGENTS.md records a preference, exercising that preference is not a bad idea.
 - **Destructive/irreversible actions** - dropping tables, force-pushing, `rm -rf`. The system prompt's risky-action rule handles these separately.
 - **Clarification you need** - "I don't understand" is a question, not pushback.
 - **Formal, planned work.** If the user walks in with a multi-day plan, the right gate is the planning/review workflow, not this skill. This is a mid-stream guardrail for casual asks that slip in unpriced.
 
 ### Contradicting a saved preference
 
-If the user's request contradicts a memory, CLAUDE.md, or AGENTS.md entry, that's a potential preference update, not a pushback case. Handle it lightly:
+If the user's request contradicts a memory or AGENTS.md entry, that's a potential preference update, not a pushback case. Handle it lightly:
 
-1. Flag the existing note: "Quick flag - the agent instructions (AGENTS.md/CLAUDE.md) say [X]; this goes the other way."
+1. Flag the existing note: "Quick flag - the agent instructions (AGENTS.md) say [X]; this goes the other way."
 2. Ask: "Update the note, or one-time exception?"
 3. Proceed with whatever the user says. No further challenge.
 
@@ -159,12 +159,12 @@ For situations where the user doesn't want any debate - they know what they're a
 
 Users often drift into that word organically, though, so encourage setting a more distinctive phrase. Honor any of these in order:
 
-1. A phrase the user has saved in memory or AGENTS.md/CLAUDE.md (e.g., "my pushback safe word is 'full send'").
+1. A phrase the user has saved in memory or AGENTS.md (e.g., "my pushback safe word is 'full send'").
 2. The default `override`.
 
 Watch for the safe word at any round, including round 1 itself. "That's scope creep, I'd rather defer" → "override" → skip straight to round 3 concede + plan.
 
-Recommend in passing - if a user ever sounds frustrated by pushback, mention: "By the way - if you want me to skip the debate, set a safe word in AGENTS.md (or CLAUDE.md) (`my pushback safe word is 'X'`). Default is 'override'." Don't lecture about it unprompted.
+Recommend in passing - if a user ever sounds frustrated by pushback, mention: "By the way - if you want me to skip the debate, set a safe word in AGENTS.md (`my pushback safe word is 'X'`). Default is 'override'." Don't lecture about it unprompted.
 
 ## Deferral conditioning
 

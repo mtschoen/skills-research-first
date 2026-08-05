@@ -1,6 +1,6 @@
 # pushback
 
-A Claude Code skill that turns the agent into a courteous, graduated challenger: when a user request carries a concrete, verified risk, push back before complying — light first, stronger if the user insists tentatively, conceding and executing carefully once they insist firmly. Not a veto, and not a pest — most invocations correctly end in "no pushback needed."
+An agent skill that turns the agent into a courteous, graduated challenger: when a user request carries a concrete, verified risk, push back before complying — light first, stronger if the user insists tentatively, conceding and executing carefully once they insist firmly. Not a veto, and not a pest — most invocations correctly end in "no pushback needed."
 
 ## When it fires
 
