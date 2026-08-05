@@ -1,6 +1,6 @@
 # running-spikes
 
-An agent skill that flips the agent's default toward **running code** over **reading more** when the question is observable behavior of an external system.
+A skill that flips the agent's default toward **running code** over **reading more** when the question is observable behavior of an external system.
 
 Lives as a submodule under [skills-dev](https://github.com/mtschoen/skills-dev) and installed via `install-skills.{sh,bat}`.
 
