@@ -1,6 +1,6 @@
 # fast-tests
 
-A Claude Code skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test — and never replace integration tests with unit-level mocks that pretend to verify behavior.
+An agent skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test — and never replace integration tests with unit-level mocks that pretend to verify behavior.
 
 ## What it does
 
@@ -18,7 +18,7 @@ Via the skills-dev installer (clone [skills-dev](https://github.com/mtschoen/ski
 install-skills.bat -y fast-tests
 ```
 
-Installs to `~/.claude/skills/fast-tests/`. The installer copies `SKILL.md` + `references/` and excludes development-only files (this `README.md`, `LICENSE`, `evals/`, `workspace/`). The agent loads `SKILL.md` from the install location; this README is for human readers browsing the repo.
+Installs to `~/.agents/skills/fast-tests/` (or wherever your agent harness reads skills from - e.g. `~/.claude/skills/` for Claude Code). The installer copies `SKILL.md` + `references/` and excludes development-only files (this `README.md`, `LICENSE`, `evals/`, `workspace/`). The agent loads `SKILL.md` from the install location; this README is for human readers browsing the repo.
 
 ## Layout
 
