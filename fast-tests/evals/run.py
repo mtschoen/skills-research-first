@@ -72,7 +72,11 @@ def load_evals(evals_path: Path) -> list:
 
 
 def build_prompt(eval_entry: dict, config: str, skill_md: str) -> str:
-    skill_section = SKILL_SECTION_WRAPPER.format(skill_md=skill_md) if config == "with_skill" else ""
+    skill_section = (
+        SKILL_SECTION_WRAPPER.format(skill_md=skill_md)
+        if config == "with_skill"
+        else ""
+    )
     return AGENT_PROMPT_TEMPLATE.format(
         skill_section=skill_section,
         prior_context=eval_entry["prior_context"],
@@ -83,10 +87,14 @@ def build_prompt(eval_entry: dict, config: str, skill_md: str) -> str:
 
 def invoke_agent(prompt: str, model: str | None, timeout: int) -> tuple[str, dict]:
     cmd = [
-        "claude", "-p",
-        "--output-format", "json",
-        "--permission-mode", "bypassPermissions",
-        "--tools", "Read,Grep,Glob",
+        "claude",
+        "-p",
+        "--output-format",
+        "json",
+        "--permission-mode",
+        "bypassPermissions",
+        "--tools",
+        "Read,Grep,Glob",
         "--disable-slash-commands",
     ]
     if model:
@@ -116,7 +124,8 @@ def invoke_agent(prompt: str, model: str | None, timeout: int) -> tuple[str, dic
     response_text = (wrapper.get("result") or "").strip()
     usage = wrapper.get("usage") or {}
     timing = {
-        "total_tokens": (usage.get("input_tokens") or 0) + (usage.get("output_tokens") or 0),
+        "total_tokens": (usage.get("input_tokens") or 0)
+        + (usage.get("output_tokens") or 0),
         "duration_ms": wrapper.get("duration_ms", int(duration * 1000)),
         "total_duration_seconds": round(duration, 2),
         "total_cost_usd": wrapper.get("total_cost_usd"),
@@ -128,10 +137,19 @@ def invoke_agent(prompt: str, model: str | None, timeout: int) -> tuple[str, dic
 def write_run(target_dir: Path, response_text: str, timing: dict):
     (target_dir / "outputs").mkdir(parents=True, exist_ok=True)
     (target_dir / "outputs" / "response.md").write_text(response_text, encoding="utf-8")
-    (target_dir / "timing.json").write_text(json.dumps(timing, indent=2), encoding="utf-8")
+    (target_dir / "timing.json").write_text(
+        json.dumps(timing, indent=2), encoding="utf-8"
+    )
 
 
-def run_single_turn(eval_entry: dict, config: str, run_dir: Path, skill_md: str, model: str | None, timeout: int) -> dict:
+def run_single_turn(
+    eval_entry: dict,
+    config: str,
+    run_dir: Path,
+    skill_md: str,
+    model: str | None,
+    timeout: int,
+) -> dict:
     prompt = build_prompt(eval_entry, config, skill_md)
     response, timing = invoke_agent(prompt, model, timeout)
     if "_error" in timing:
@@ -142,17 +160,27 @@ def run_single_turn(eval_entry: dict, config: str, run_dir: Path, skill_md: str,
 
 def write_eval_metadata(eval_dir: Path, eval_entry: dict):
     eval_dir.mkdir(parents=True, exist_ok=True)
-    (eval_dir / "eval_metadata.json").write_text(json.dumps(eval_entry, indent=2), encoding="utf-8")
+    (eval_dir / "eval_metadata.json").write_text(
+        json.dumps(eval_entry, indent=2), encoding="utf-8"
+    )
 
 
 def main():
     parser = argparse.ArgumentParser(description="Run fast-tests skill evals")
     parser.add_argument("--evals", required=True, help="Path to evals.json")
-    parser.add_argument("--skill-md", required=True, help="Path to SKILL.md (used for with_skill)")
-    parser.add_argument("--output-dir", required=True, help="Where to write run artifacts")
+    parser.add_argument(
+        "--skill-md", required=True, help="Path to SKILL.md (used for with_skill)"
+    )
+    parser.add_argument(
+        "--output-dir", required=True, help="Where to write run artifacts"
+    )
     parser.add_argument("--runs-per-config", type=int, default=1)
-    parser.add_argument("--configs", nargs="+", default=["with_skill", "without_skill"],
-                        choices=["with_skill", "without_skill"])
+    parser.add_argument(
+        "--configs",
+        nargs="+",
+        default=["with_skill", "without_skill"],
+        choices=["with_skill", "without_skill"],
+    )
     parser.add_argument("--model", default=None)
     parser.add_argument("--timeout", type=int, default=300)
     parser.add_argument("--parallel", type=int, default=4)
@@ -180,12 +208,16 @@ def main():
     print(f"Discovered {len(work_units)} work units", file=sys.stderr)
     if args.dry_run:
         for eval_entry, config, run_dir in work_units:
-            print(f"  {eval_entry['name']} / {config} / {run_dir.name}", file=sys.stderr)
+            print(
+                f"  {eval_entry['name']} / {config} / {run_dir.name}", file=sys.stderr
+            )
         return
 
     def _do(unit):
         eval_entry, config, run_dir = unit
-        return unit, run_single_turn(eval_entry, config, run_dir, skill_md, args.model, args.timeout)
+        return unit, run_single_turn(
+            eval_entry, config, run_dir, skill_md, args.model, args.timeout
+        )
 
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
         futures = {pool.submit(_do, u): u for u in work_units}
@@ -200,7 +232,10 @@ def main():
             extra = ""
             if outcome.get("error"):
                 extra = f" - {outcome['error'][:100]}"
-            print(f"  [{status}] {eval_entry['name']}/{config}/{run_dir.name}{extra}", file=sys.stderr)
+            print(
+                f"  [{status}] {eval_entry['name']}/{config}/{run_dir.name}{extra}",
+                file=sys.stderr,
+            )
 
     print("\nDone.", file=sys.stderr)
 

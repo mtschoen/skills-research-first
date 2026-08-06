@@ -125,7 +125,7 @@ class GradingUnit:
 
 def build_grader_prompt(unit: GradingUnit) -> str:
     response_text = unit.response_path.read_text(encoding="utf-8", errors="replace")
-    assertions_list = "\n".join(f"{i+1}. {a}" for i, a in enumerate(unit.assertions))
+    assertions_list = "\n".join(f"{i + 1}. {a}" for i, a in enumerate(unit.assertions))
     return GRADER_PROMPT_TEMPLATE.format(
         eval_name=unit.eval_name,
         eval_id=unit.eval_id,
@@ -145,10 +145,14 @@ def build_grader_prompt(unit: GradingUnit) -> str:
 
 def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
     cmd = [
-        "claude", "-p",
-        "--output-format", "json",
-        "--permission-mode", "bypassPermissions",
-        "--tools", "Read,Grep,Glob",
+        "claude",
+        "-p",
+        "--output-format",
+        "json",
+        "--permission-mode",
+        "bypassPermissions",
+        "--tools",
+        "Read,Grep,Glob",
         "--disable-slash-commands",
     ]
     if model:
@@ -178,11 +182,15 @@ def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
     inner_text = wrapper.get("result", "") if isinstance(wrapper, dict) else ""
     payload = _extract_json_object(inner_text)
     if payload is None:
-        return {"_error": f"grader inner payload has no JSON object; raw={inner_text[:500]}"}
+        return {
+            "_error": f"grader inner payload has no JSON object; raw={inner_text[:500]}"
+        }
     try:
         return json.loads(payload)
     except json.JSONDecodeError as e:
-        return {"_error": f"grader inner JSON failed to parse: {e}; raw={payload[:500]}"}
+        return {
+            "_error": f"grader inner JSON failed to parse: {e}; raw={payload[:500]}"
+        }
 
 
 def _extract_json_object(text: str) -> str | None:
@@ -197,7 +205,9 @@ def _extract_json_object(text: str) -> str | None:
     stripped = text.strip()
     if stripped.startswith("```"):
         lines = stripped.splitlines()
-        stripped = "\n".join(line for line in lines if not line.strip().startswith("```"))
+        stripped = "\n".join(
+            line for line in lines if not line.strip().startswith("```")
+        )
     # Find first { and walk balanced braces, respecting strings
     start = stripped.find("{")
     if start < 0:
@@ -222,7 +232,7 @@ def _extract_json_object(text: str) -> str | None:
         elif c == "}":
             depth -= 1
             if depth == 0:
-                return stripped[start:i + 1]
+                return stripped[start : i + 1]
     return None
 
 
@@ -233,7 +243,9 @@ def load_evals(evals_path: Path) -> tuple[dict, dict]:
     return by_id, universal
 
 
-def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[GradingUnit]:
+def discover_units(
+    responses_dir: Path, by_id: dict, universal: str
+) -> list[GradingUnit]:
     units = []
     for eval_dir in sorted(responses_dir.iterdir()):
         if not eval_dir.is_dir() or not eval_dir.name.startswith("eval-"):
@@ -244,7 +256,10 @@ def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[Gra
             continue
         eval_entry = by_id.get(eval_id)
         if not eval_entry:
-            print(f"WARN: {eval_dir.name} has no matching eval in evals.json", file=sys.stderr)
+            print(
+                f"WARN: {eval_dir.name} has no matching eval in evals.json",
+                file=sys.stderr,
+            )
             continue
 
         for config in ("with_skill", "without_skill"):
@@ -254,33 +269,35 @@ def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[Gra
             for run_dir in sorted(config_dir.iterdir()):
                 if not run_dir.name.startswith("run-"):
                     continue
-                units.extend(
-                    _units_for_run(run_dir, eval_entry, config, universal)
-                )
+                units.extend(_units_for_run(run_dir, eval_entry, config, universal))
     return units
 
 
-def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str) -> list[GradingUnit]:
+def _units_for_run(
+    run_dir: Path, eval_entry: dict, config: str, universal: str
+) -> list[GradingUnit]:
     mock_repo = eval_entry.get("mock_repo", "")
     prior_context = eval_entry.get("prior_context", "")
     response = run_dir / "outputs" / "response.md"
     if not response.exists():
         return []
-    return [GradingUnit(
-        eval_id=eval_entry["id"],
-        eval_name=eval_entry["name"],
-        bucket=eval_entry.get("bucket", "none"),
-        kind=eval_entry["kind"],
-        config=config,
-        run=run_dir.name,
-        prior_context=prior_context,
-        user_message=eval_entry["user"],
-        response_path=response,
-        output_grading_path=run_dir / "grading.json",
-        assertions=eval_entry["assertions"],
-        universal_assertion=universal,
-        mock_repo=mock_repo,
-    )]
+    return [
+        GradingUnit(
+            eval_id=eval_entry["id"],
+            eval_name=eval_entry["name"],
+            bucket=eval_entry.get("bucket", "none"),
+            kind=eval_entry["kind"],
+            config=config,
+            run=run_dir.name,
+            prior_context=prior_context,
+            user_message=eval_entry["user"],
+            response_path=response,
+            output_grading_path=run_dir / "grading.json",
+            assertions=eval_entry["assertions"],
+            universal_assertion=universal,
+            mock_repo=mock_repo,
+        )
+    ]
 
 
 def grade_unit(unit: GradingUnit, model: str | None, timeout: int) -> dict:
@@ -301,7 +318,9 @@ def grade_unit(unit: GradingUnit, model: str | None, timeout: int) -> dict:
 def summarize(records: list[dict]) -> dict:
     total = len(records)
     errored = [r for r in records if "_error" in r]
-    universal_failures = [r for r in records if r.get("universal", {}).get("passed") is False]
+    universal_failures = [
+        r for r in records if r.get("universal", {}).get("passed") is False
+    ]
 
     pass_rates = []
     for r in records:
@@ -322,33 +341,66 @@ def summarize(records: list[dict]) -> dict:
         "mean_pass_rate": mean_rate,
         "mean_pass_rate_with_skill": (
             sum(by_config["with_skill"]) / len(by_config["with_skill"])
-            if by_config["with_skill"] else None
+            if by_config["with_skill"]
+            else None
         ),
         "mean_pass_rate_without_skill": (
             sum(by_config["without_skill"]) / len(by_config["without_skill"])
-            if by_config["without_skill"] else None
+            if by_config["without_skill"]
+            else None
         ),
         "errored_units": [
-            {"eval_name": r["eval_name"], "config": r["config"], "run": r["run"], "error": r["_error"]}
+            {
+                "eval_name": r["eval_name"],
+                "config": r["config"],
+                "run": r["run"],
+                "error": r["_error"],
+            }
             for r in errored
         ],
         "universal_failure_units": [
-            {"eval_name": r["eval_name"], "config": r["config"], "run": r["run"],
-             "bad_claims": [c for c in r["universal"].get("claims", []) if not c.get("verified", True)]}
+            {
+                "eval_name": r["eval_name"],
+                "config": r["config"],
+                "run": r["run"],
+                "bad_claims": [
+                    c
+                    for c in r["universal"].get("claims", [])
+                    if not c.get("verified", True)
+                ],
+            }
             for r in universal_failures
         ],
     }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Grade fast-tests skill eval responses")
-    parser.add_argument("--responses-dir", required=True, help="Directory containing eval-*/config/run-*/ structure")
+    parser = argparse.ArgumentParser(
+        description="Grade fast-tests skill eval responses"
+    )
+    parser.add_argument(
+        "--responses-dir",
+        required=True,
+        help="Directory containing eval-*/config/run-*/ structure",
+    )
     parser.add_argument("--evals", required=True, help="Path to evals.json")
-    parser.add_argument("--model", default=None, help="Model for grader subagent (default: user's configured)")
-    parser.add_argument("--timeout", type=int, default=300, help="Timeout per grader call in seconds")
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model for grader subagent (default: user's configured)",
+    )
+    parser.add_argument(
+        "--timeout", type=int, default=300, help="Timeout per grader call in seconds"
+    )
     parser.add_argument("--parallel", type=int, default=4, help="Parallel grader calls")
-    parser.add_argument("--only-eval", type=int, default=None, help="Grade only this eval id")
-    parser.add_argument("--dry-run", action="store_true", help="Discover units and print counts; do not invoke grader")
+    parser.add_argument(
+        "--only-eval", type=int, default=None, help="Grade only this eval id"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Discover units and print counts; do not invoke grader",
+    )
     args = parser.parse_args()
 
     responses_dir = Path(args.responses_dir).resolve()
@@ -368,8 +420,7 @@ def main():
     records = []
     with ThreadPoolExecutor(max_workers=args.parallel) as executor:
         future_map = {
-            executor.submit(grade_unit, u, args.model, args.timeout): u
-            for u in units
+            executor.submit(grade_unit, u, args.model, args.timeout): u for u in units
         }
         for future in as_completed(future_map):
             unit = future_map[future]
@@ -385,11 +436,16 @@ def main():
                 }
             records.append(record)
             status = "OK" if "_error" not in record else "ERR"
-            print(f"  [{status}] {unit.eval_name}/{unit.config}/{unit.run}", file=sys.stderr)
+            print(
+                f"  [{status}] {unit.eval_name}/{unit.config}/{unit.run}",
+                file=sys.stderr,
+            )
 
     summary_path = responses_dir / "grading_summary.json"
     summary = summarize(records)
-    summary_path.write_text(json.dumps({"summary": summary, "records": records}, indent=2), encoding="utf-8")
+    summary_path.write_text(
+        json.dumps({"summary": summary, "records": records}, indent=2), encoding="utf-8"
+    )
     print(f"\nSummary written to {summary_path}", file=sys.stderr)
     print(json.dumps(summary, indent=2))
 
