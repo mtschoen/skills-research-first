@@ -1,6 +1,6 @@
 ---
 name: running-spikes
-description: "Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime - prefer learning from running code in a scratch dir over inferring from docs. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked (check ~/.agents/notes/spike_*.md first). Fires phase-agnostically - during brainstorming, plan-writing, AND mid-implementation."
+description: "Use when about to do extended Read/Grep/thinking on a question whose answer is observable behavior of an external system, library, framework, or runtime - prefer learning from running code in a scratch dir over inferring from docs. Suppressed when the question is about THIS codebase, is subjective/design, or has already been spiked (check ~/.agents/memories/spike_*.md first). Fires phase-agnostically - during brainstorming, plan-writing, AND mid-implementation."
 ---
 
 # Running Spikes
@@ -31,7 +31,7 @@ Before firing, silently answer. If any is "yes," don't spike - fall back to the 
 
 1. **Is this about THIS codebase?** → Read the code or write a test against it. Spike scope is for external/unknown systems.
 2. **Is the answer subjective / a design opinion?** → No experiment can resolve "which feels nicer." Reason it out.
-3. **Have I (or have past sessions) already spiked this?** → Check `~/.agents/notes/spike_registry.md` first, then glob `~/.agents/notes/spike_*.md`. If found, cite and skip.
+3. **Have I (or have past sessions) already spiked this?** → Check `~/.agents/memories/spike_registry.md` first, then glob `~/.agents/memories/spike_*.md`. If found, cite and skip.
 4. **Did the user just say "just answer"?** → Last-message override beats the skill.
 
 Note: "authoritative docs exist" is deliberately NOT a suppression gate. Even when docs exist, prefer running code to reading. Reinforces the bias toward action.
@@ -78,7 +78,7 @@ Ask format:
 
 ### Per-topic note (always written)
 
-`~/.agents/notes/spike_<slug>.md`:
+`~/.agents/memories/spike_<slug>.md`:
 
 ```markdown
 ---
@@ -102,7 +102,7 @@ The bar is low - it's a breadcrumb for future-you. Always written.
 
 ### Curated registry (sometimes)
 
-`~/.agents/notes/spike_registry.md`:
+`~/.agents/memories/spike_registry.md`:
 
 ```markdown
 # Spike registry
@@ -130,8 +130,8 @@ Not gated on user approval. Cheap, append-only, easy to prune later.
 
 Before firing on a topic, in order:
 
-1. Grep `~/.agents/notes/spike_registry.md` for keywords. Hit → cite the line, follow the link to the per-topic note, skip the spike.
-2. Glob `~/.agents/notes/spike_*.md`. Filename or content match → read the note, skip.
+1. Grep `~/.agents/memories/spike_registry.md` for keywords. Hit → cite the line, follow the link to the per-topic note, skip the spike.
+2. Glob `~/.agents/memories/spike_*.md`. Filename or content match → read the note, skip.
 3. Check earlier turns of this conversation for in-flight findings the user chose not to register.
 4. No hit anywhere → proceed.
 
@@ -172,7 +172,7 @@ All re-engage on promotion.
 >
 > [runs the probe, observes behavior]
 >
-> Result: with `follow_redirects=True`, httpx follows http→https but NOT https→http by default - security guardrail. To allow it, you build a custom transport. Note saved at `~/.agents/notes/spike_httpx-redirect-schemes.md` and registered (likely to recur). For your client: do you actually need https→http, or is the default safe?"
+> Result: with `follow_redirects=True`, httpx follows http→https but NOT https→http by default - security guardrail. To allow it, you build a custom transport. Note saved at `~/.agents/memories/spike_httpx-redirect-schemes.md` and registered (likely to recur). For your client: do you actually need https→http, or is the default safe?"
 
 **Example B - medium+ spike, ask first (mid-implementation):**
 
@@ -190,7 +190,7 @@ All re-engage on promotion.
 
 > User: "I'm wondering about httpx redirect behavior across schemes."
 >
-> Agent: "Already spiked this on 2026-05-07 - see `~/.agents/notes/spike_httpx-redirect-schemes.md`. TL;DR: `follow_redirects=True` follows http→https but not https→http by default; needs a custom transport for the latter. Working from that, do you want the default or the custom transport?"
+> Agent: "Already spiked this on 2026-05-07 - see `~/.agents/memories/spike_httpx-redirect-schemes.md`. TL;DR: `follow_redirects=True` follows http→https but not https→http by default; needs a custom transport for the latter. Working from that, do you want the default or the custom transport?"
 
 **Example E - promotion offer:**
 
@@ -213,7 +213,7 @@ All re-engage on promotion.
 Before announcing a spike, silently answer:
 
 - **Bucket:** is this an *observable behavior* question about an *external* system?
-- **Gates:** did I check all four suppression gates? Specifically, did I grep `~/.agents/notes/spike_*.md` and `spike_registry.md`?
+- **Gates:** did I check all four suppression gates? Specifically, did I grep `~/.agents/memories/spike_*.md` and `spike_registry.md`?
 - **Tier:** small or medium+? Asking when I should ask, announcing-and-going when I should?
 - **Frame:** can I state the spike's question in one concrete sentence? If not, scope is too vague - narrow it before starting.
 
@@ -224,7 +224,7 @@ If any check is "no," reset.
 Before reporting back to the user:
 
 - **Answered the question?** Did the spike actually produce evidence for the original question, or did I drift? If drifted, summarize what was learned but flag the original question is still open.
-- **Wrote the note?** Per-topic file at `~/.agents/notes/spike_<slug>.md` with Question / Answer / Spiked / Existence-proofs.
+- **Wrote the note?** Per-topic file at `~/.agents/memories/spike_<slug>.md` with Question / Answer / Spiked / Existence-proofs.
 - **Applied the razor?** If generally useful, appended a line to `spike_registry.md`.
 - **Offered promotion if relevant?** If the spike code is keep-able and the user would plausibly want it in the project, offered the three-option gate.
 - **Closed out scratch?** Either left it (default) or noted that it's deletable.
@@ -233,7 +233,7 @@ Before reporting back to the user:
 
 - **Spiking on the user's codebase.** "Let me write a quick test to see how their `parseConfig` behaves" - that's READING with extra steps. Just read it.
 - **Spiking to look thorough.** If reading the official docs answers it in one Fetch, do that. The skill's bias toward action is calibrated against a real read-loop, not against five-minute single-page lookups.
-- **Skipping the prior-spike check.** Cross-session memory only works if every spike checks `~/.agents/notes/` first. Re-deriving an answer that's already on disk is wasted session.
+- **Skipping the prior-spike check.** Cross-session memory only works if every spike checks `~/.agents/memories/` first. Re-deriving an answer that's already on disk is wasted session.
 - **Skipping the per-topic note.** Without the note, the next session re-spikes. The note is the value; the scratch code is incidental.
 - **Carrying "sloppy is fine" into promoted code.** Once promotion happens, full discipline re-engages.
 - **Manufacturing "general usefulness" to register every spike.** The registry's value is its curation. If everything is generally useful, nothing is.

@@ -6,7 +6,7 @@ Lives as a submodule under [skills-dev](https://github.com/mtschoen/skills-dev) 
 
 ## What it does
 
-Phase-agnostically detects when the agent is about to do extended Read / Grep / thinking on a question that running code could resolve in a few minutes. Suggests a small spike (single-file probe or scratch hello-world) instead. Findings land in `~/.agents/notes/spike_<slug>.md` so future sessions don't re-litigate.
+Phase-agnostically detects when the agent is about to do extended Read / Grep / thinking on a question that running code could resolve in a few minutes. Suggests a small spike (single-file probe or scratch hello-world) instead. Findings land in `~/.agents/memories/spike_<slug>.md` so future sessions don't re-litigate.
 
 See [SKILL.md](./SKILL.md) for the full skill text.
 
