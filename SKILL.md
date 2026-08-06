@@ -58,6 +58,10 @@ on outdated assumptions. So the reminder fires on **every** user prompt
 skip - the hook stays deliberately simple rather than trying to detect
 prior searches.
 
+## Relation to running-spikes
+
+This skill is *look it up* - a search or doc read, seconds, stateless. When the question is about observable behavior of an external system and a small experiment would settle it definitively, the `running-spikes` skill (if installed) is the escalation: *run it and observe*. Searching usually remains the cheaper opening move; spike when reading doesn't settle it or running is cheap.
+
 ## Examples
 
 **Triggers a search:**
