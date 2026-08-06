@@ -47,7 +47,7 @@
       "bucket": "lever",
       "kind": "single-turn",
       "mock_repo": "./workspace/mock_repo",
-      "prior_context": "Slow sequential test suite. During the run, htop shows CPU sitting at 20% utilization the whole time. The suite has 200 tests in tests/. There's no shared mutable state in the codebase that you've noticed (no globals, no monkeypatched modules).",
+      "prior_context": "Slow sequential test suite: the full run takes about 90 seconds. During the run, htop shows CPU sitting at 20% utilization the whole time, since most of the suite's 41 tests spend their time waiting on network I/O rather than computing. There's no shared mutable state in the codebase that you've noticed (no globals, no monkeypatched modules).",
       "user": "tests are slow and CPU sits at 20% the whole run. any way to use more cores?",
       "assertions": [
         "Response recognizes parallelization as the right lever for low-CPU-utilization sequential runs",
