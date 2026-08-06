@@ -139,7 +139,7 @@ Before firing on a topic, in order:
 
 When the spike yields keep-able code, present three options:
 
-> "The hello-world is working and matches what your <component> needs. Three options:
+> "The hello-world is working and matches what your `<component>` needs. Three options:
 >
 > 1. **Promote** - move `.agents/spikes/<slug>/probe.py` into `<destination-path>` as the foundation. From there it re-engages TDD/smoke-test/coverage as normal production code.
 > 2. **Keep iterating** - refine in scratch first.
