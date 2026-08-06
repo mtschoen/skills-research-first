@@ -60,7 +60,8 @@ Do not push back on these.
 
 - **Style and preference** - tabs vs. spaces, naming, comment density.
 - **Settled decisions** - if memory or AGENTS.md records a preference, exercising that preference is not a bad idea.
-- **Destructive/irreversible actions** - dropping tables, force-pushing, `rm -rf`. The system prompt's risky-action rule handles these separately.
+- **Destructive/irreversible actions** - dropping tables, force-pushing, `rm -rf`. Your harness's risky-action confirmation rule (if it has one) handles these separately.
+- **Your own drafts** - a shortcut *you* are about to commit (silent fallback, placeholder-as-answer, test-only knob) is `escalate-over-shortcut` territory, if that companion skill is installed: it fires agent-to-self on the agent's draft, where this skill fires agent-to-user on the request.
 - **Clarification you need** - "I don't understand" is a question, not pushback.
 - **Formal, planned work.** If the user walks in with a multi-day plan, the right gate is the planning/review workflow, not this skill. This is a mid-stream guardrail for casual asks that slip in unpriced.
 
