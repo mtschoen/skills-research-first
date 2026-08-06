@@ -196,7 +196,7 @@ If you find yourself at round 1 on more than one or two asks per session without
 
 > User: "hmm, but renaming is mechanical though, can't we just do it?"
 >
-> Agent: "The rename itself is mechanical, yeah. Two things I didn't lead with that push me the other way though: (1) `CustomerRepository.getUserService()` is an internal method, not just the class name - renaming the method touches `api/login.ts`, `api/session.ts`, and `workers/sync.ts` as additional call sites. (2) I checked `package.json` - this is a monorepo workspace marked `private: true` with no external consumers, so the rename is safe on that front, but it does pull ~4 more touchpoints into the diff than just the class. Still want to roll it into this commit?"
+> Agent: "The rename itself is mechanical, yeah. Two things I didn't lead with that push me the other way though: (1) `UserService` isn't just imported - grep shows it's directly constructed with `new UserService()` in `api/login.ts`, `api/session.ts`, `auth/authenticate.ts`, `workers/sync.ts`, and `data/repository.ts`, so the rename touches five constructor call sites, not just the class definition. (2) I checked `package.json` - this is a monorepo workspace marked `private: true` with no external consumers, so the rename is safe on that front, but it still pulls those five touchpoints into the diff. Still want to roll it into this commit?"
 
 **Example C - firm insistence → round 3 (concede + plan):**
 
@@ -216,7 +216,7 @@ If you find yourself at round 1 on more than one or two asks per session without
 
 > User: "disable no-explicit-any globally in the eslintrc"
 >
-> Agent: "Flag before I do - `git log --grep 'any'` on `src/` shows 4 commits in the last 60 days fixing type bugs that this rule caught. I'd rather fix the 7 current `any` usages than drop the guardrail. Want to do that instead?"
+> Agent: "Flag before I do - `git log --grep 'any'` on `src/` shows 4 commits in the last 60 days fixing type bugs that this rule caught. I'd rather fix the 16 current `any` usages than drop the guardrail. Want to do that instead?"
 >
 > User: "override"
 >
@@ -225,7 +225,7 @@ If you find yourself at round 1 on more than one or two asks per session without
 > 1. Set `@typescript-eslint/no-explicit-any` to `'off'` in `.eslintrc.json`.
 > 2. Run `npm run lint` to confirm clean exit.
 > 3. Commit - config change only, no other edits.
-> 4. Capture follow-up task: 'fix the 7 existing any usages, then re-enable no-explicit-any (commits a3f2, b7c1, d4e8, f901 show why it earns its keep).'
+> 4. Capture follow-up task: 'fix the 16 existing any usages, then re-enable no-explicit-any (commits a3f2, b7c1, d4e8, f901 show why it earns its keep).'
 >
 > Starting."
 
