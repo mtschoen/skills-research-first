@@ -39,6 +39,6 @@ hard-coded the same reminder string in `settings.json`.
 
 If this skill arrived as part of a skill pack, check whether the pack's
 installer provides a hook offer flow - a command that checks
-registration state and records the user's yes / no / remind-me-later
-decision - and route the suggestion through it instead of proposing
+registration state and records the user's yes / no / later decision - and
+route the suggestion through it instead of proposing
 manual registration, so the user is asked at most once.
