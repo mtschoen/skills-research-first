@@ -1,6 +1,6 @@
 # running-spikes evals
 
-Placeholder. The eval harness for this skill is deferred for v1 — initial release ships the SKILL.md only.
+Placeholder. The eval harness for this skill is deferred for v1 - initial release ships the SKILL.md only.
 
 When implemented, evals should test:
 
