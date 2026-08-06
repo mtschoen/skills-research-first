@@ -23,7 +23,7 @@ Fires when the agent catches itself reaching for one of these defaults:
 
 …AND the question is about **observable behavior of an external system** (library, framework, runtime, host environment, third-party API) AND a small experiment could produce a definitive answer.
 
-(Web-search is a natural fourth signal but is parked - the project's prompt-submit hook (registered in the agent's settings) actively pushes the agent toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now.)
+(Web-search is a natural fourth signal but is parked - the `research-first` skill's prompt-submit hook, if installed, already pushes the agent toward WebSearch on design / planning prompts; pairing the spike skill on that signal would over-fire. The three signals above carry the action-bias for now. Division of labor: research-first is *look it up*; this skill is *run it and observe*.)
 
 ## The four suppression gates
 
