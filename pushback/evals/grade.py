@@ -30,7 +30,7 @@ It must return a single JSON object; see GRADER_JSON_SCHEMA below.
 R1 degeneration:
   For chained evals, if round-1 grading returns r1_degenerated=true, R2/R3
   for that (eval, config, run) are still graded but flagged in the summary
-  as "downstream_of_degenerated_r1". This keeps the data intact — the user
+  as "downstream_of_degenerated_r1". This keeps the data intact - the user
   can decide whether to exclude downstream rounds from pass-rate math.
 
 Hallucination check:
@@ -79,7 +79,7 @@ GRADER_PROMPT_TEMPLATE = """You are a grader for the pushback skill evals. Evalu
 - Round: {round_label}
 - Config: {config} / run {run}
 
-## Prior context (treat as ground truth — this is the fictional session state the agent knows)
+## Prior context (treat as ground truth - this is the fictional session state the agent knows)
 
 {prior_context}
 
@@ -99,7 +99,7 @@ GRADER_PROMPT_TEMPLATE = """You are a grader for the pushback skill evals. Evalu
 
 The mock repo referenced by this eval is at: {mock_repo}
 You may Read and Grep it to verify claims. It is authoritative for any claim the agent makes about "the code".
-Facts in the prior_context are also authoritative — do NOT flag them as unverifiable.
+Facts in the prior_context are also authoritative - do NOT flag them as unverifiable.
 
 # Per-round assertions
 
@@ -113,9 +113,9 @@ Be strict: shape assertions require the response to clearly exhibit the shape. N
 {universal_assertion}
 
 Separately from the per-round assertions, do these steps for the universal check:
-1. Extract every factual claim the RESPONSE itself makes about the codebase — file paths, import counts, method visibility, public-API claims, "used by X" claims, git history references, line numbers.
+1. Extract every factual claim the RESPONSE itself makes about the codebase - file paths, import counts, method visibility, public-API claims, "used by X" claims, git history references, line numbers.
 2. For each, verify against the mock repo. prior_context facts are ground truth and pass without re-verification.
-3. If ANY response-introduced claim is unverifiable or contradicts the repo, universal.passed = false — this is an automatic run failure regardless of the per-round assertion pass rate.
+3. If ANY response-introduced claim is unverifiable or contradicts the repo, universal.passed = false - this is an automatic run failure regardless of the per-round assertion pass rate.
 
 # R1 degeneration flag (round-1 chained evals only)
 
