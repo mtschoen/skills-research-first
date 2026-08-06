@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # UserPromptSubmit hook: inject the research-first reminder into the agent's
 # context before it takes any action on the user's prompt. Fires once per
-# user prompt — the strongest moment to influence first-action behaviour.
+# user prompt - the strongest moment to influence first-action behaviour.
 #
 # Unconditional by design: the reminder is emitted on every prompt and the
 # agent self-polices the "already searched this session" skip. Keeping the

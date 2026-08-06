@@ -7,10 +7,10 @@ writing custom code, refactoring, or debugging an unfamiliar error.
 
 ## What it is
 
-- `SKILL.md` — the discipline the agent follows: which decisions trigger a
+- `SKILL.md` - the discipline the agent follows: which decisions trigger a
   search, what counts as a decision vs. user narration, and the one valid
   skip (already searched this session).
-- `hooks/prompt-reminder.sh` — a `UserPromptSubmit` hook that injects the
+- `hooks/prompt-reminder.sh` - a `UserPromptSubmit` hook that injects the
   reminder as `additionalContext` on every prompt. Unconditional by
   design; the agent self-polices the "already searched" skip.
 
