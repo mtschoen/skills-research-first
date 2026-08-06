@@ -10,4 +10,4 @@ When implemented, evals should test:
 - Memory layer (per-topic note + curated registry) is written and read consistently across spikes.
 - Promotion mechanic is offered when scratch code is keep-able.
 
-See `pushback/evals/` for the harness pattern this should follow. Behavioral skills sometimes don't apply to the agent that authored them (see `feedback_skill_self_application.md` in cross-project memory) — qualitative real-session testing matters more than n=1 eval runs (see `feedback_no_iteration_on_n1.md`).
+See `pushback/evals/` for the harness pattern this should follow. Two guidelines to carry into that harness: a skill that targets the agent's own behavior often fails to change it when the same agent grades its own work, so bake an explicit self-check into the skill body itself rather than trust that authorship implies compliance; and a single eval run is too noisy to treat as a verdict, so corroborate any n=1 pass or fail with either repeated runs or qualitative signal from real usage sessions before concluding a skill works.
