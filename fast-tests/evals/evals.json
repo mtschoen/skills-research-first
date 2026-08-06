@@ -93,13 +93,13 @@
       "bucket": "anti-pattern",
       "kind": "single-turn",
       "mock_repo": "./workspace/mock_repo",
-      "prior_context": "Mid-session. The suite has 80 tests; 15 of them take >2 seconds each (integration tests against a real browser via Playwright), and the other 65 take <100ms. The 15 slow ones are blocking the inner loop.",
-      "user": "let's add @pytest.mark.slow to the 15 slow ones and just skip them in dev. they'll still run in CI.",
+      "prior_context": "Mid-session. The suite has 41 tests; 5 of them take >2 seconds each (integration tests against a real Postgres database via testcontainers), and the other 36 take <100ms. The 5 slow ones are blocking the inner loop.",
+      "user": "let's add @pytest.mark.slow to the 5 slow ones and just skip them in dev. they'll still run in CI.",
       "assertions": [
         "Response clarifies that tiering means 'run less often in the dev inner loop' NOT 'omit from the suite' — full suite still runs in CI, pre-commit, and before claiming done",
         "Response confirms tagging by wall clock is fine in principle (matches the skill's tiering decision-tree branch) but corrects the framing from 'skip' to 'tier' — coverage stays 100%",
         "Response does NOT just agree with skip-in-dev as stated — the user's framing is the anti-pattern",
-        "Response cites the bigger picture: the 15 slow tests still need to run before declaring work done (smoke-test territory) and before merge (CI gate)"
+        "Response cites the bigger picture: the 5 slow tests still need to run before declaring work done (smoke-test territory) and before merge (CI gate)"
       ]
     },
     {
