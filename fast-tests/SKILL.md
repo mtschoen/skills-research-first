@@ -159,12 +159,11 @@ Tier by elapsed time - set a threshold (e.g., 500ms), measure each test, assign 
 
 **5. Restructure code, not the coverage gate.**
 
-When a test is slow because the production code tangles things that shouldn't be tangled -
-network calls inline with business logic, startup side effects, untestable singletons - the right
-move is to refactor the production code so the slow dependency is injectable.
-This is the same move as deleting dead code: it makes the codebase healthier.
-Restructuring to be testable is not overkill.
-It is design work that pays down complexity and eliminates the branch that was impossible to test.
+When a test is slow because the production code tangles a slow dependency where it doesn't
+belong, refactor the production code so the dependency is injectable. This is the
+"Restructure Over Exclude" rule from the **maintaining-full-coverage** skill, which owns the
+full statement and worked examples - the move is identical here, applied to speed instead of
+coverage.
 
 **6. Mock at genuine external boundaries only - never at boundaries you own.**
 
