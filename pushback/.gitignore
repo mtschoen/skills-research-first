@@ -2,3 +2,8 @@
 # evals.json depends on - see workspace/.gitignore for what stays untracked
 # (iteration run outputs and grading logs).
 workspace/
+
+# aislop runtime artifacts (session/history logs, caches, baselines).
+# Unanchored so nested project directories are covered too.
+**/.aislop/*
+!**/.aislop/config.yml
