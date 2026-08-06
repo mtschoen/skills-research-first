@@ -7,12 +7,12 @@ Set a threshold (500ms is a reasonable starting point), measure each test, assig
 
 ## Critical clarification
 
-Tiering means "run less often in the dev inner loop" — NOT "omit from the suite."
+Tiering means "run less often in the dev inner loop" - NOT "omit from the suite."
 The full suite still runs in CI, pre-commit, and before claiming done.
 Coverage stays 100% per `maintaining-full-coverage`.
 
 The "@pytest.mark.slow + skip in dev" rationalization fast-tests rejects (see SKILL.md rationalization table)
-is the failure mode this skill guards against — tiering is a scheduling optimization, not a coverage loophole.
+is the failure mode this skill guards against - tiering is a scheduling optimization, not a coverage loophole.
 
 ## Python
 
@@ -29,7 +29,7 @@ addopts = "-m 'not slow'"
 
 **Measurement step:** run `pytest --durations=0` once to get a full duration list.
 Decorate tests above threshold, re-run with the fast filter to confirm.
-Re-measure periodically — slow tests creep in silently.
+Re-measure periodically - slow tests creep in silently.
 
 ## JVM
 

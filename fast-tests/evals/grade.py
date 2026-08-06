@@ -64,7 +64,7 @@ GRADER_PROMPT_TEMPLATE = """You are a grader for the fast-tests skill evals. Eva
 - Kind: {kind}
 - Config: {config} / run {run}
 
-## Prior context (treat as ground truth — this is the fictional session state the agent knows)
+## Prior context (treat as ground truth - this is the fictional session state the agent knows)
 
 {prior_context}
 
@@ -80,7 +80,7 @@ GRADER_PROMPT_TEMPLATE = """You are a grader for the fast-tests skill evals. Eva
 
 The mock repo referenced by this eval is at: {mock_repo}
 You may Read and Grep it to verify claims. It is authoritative for any claim the agent makes about "the code".
-Facts in the prior_context are also authoritative — do NOT flag them as unverifiable.
+Facts in the prior_context are also authoritative - do NOT flag them as unverifiable.
 
 # Per-eval assertions
 
@@ -94,9 +94,9 @@ Be strict: shape assertions require the response to clearly exhibit the shape. N
 {universal_assertion}
 
 Separately from the per-eval assertions, do these steps for the universal check:
-1. Extract every factual claim the RESPONSE itself makes about the codebase — file paths, library APIs, function names, method signatures, "used by X" claims, line numbers.
+1. Extract every factual claim the RESPONSE itself makes about the codebase - file paths, library APIs, function names, method signatures, "used by X" claims, line numbers.
 2. For each, verify against the mock repo. prior_context facts are ground truth and pass without re-verification.
-3. If ANY response-introduced claim is unverifiable or contradicts the repo, universal.passed = false — this is an automatic run failure regardless of the per-eval assertion pass rate.
+3. If ANY response-introduced claim is unverifiable or contradicts the repo, universal.passed = false - this is an automatic run failure regardless of the per-eval assertion pass rate.
 
 # Output
 

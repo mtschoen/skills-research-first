@@ -1,6 +1,6 @@
 # fast-tests
 
-A skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test — and never replace integration tests with unit-level mocks that pretend to verify behavior.
+A skill that steers agents toward fast integration-test loops without compromising the integration-tests-first philosophy. Speed up SETUP, not the test - and never replace integration tests with unit-level mocks that pretend to verify behavior.
 
 ## What it does
 
@@ -43,11 +43,11 @@ Each reference holds Python / JVM / .NET sub-sections. Agents navigate by topic 
 
 ## Related skills
 
-- [`maintaining-full-coverage`](https://github.com/mtschoen/skills-maintaining-full-coverage) — orthogonal axis. Speed never licenses skipping tests.
-- [`smoke-test`](https://github.com/mtschoen/skills-smoke-test) — orthogonal layer. Outer-loop verify vs. inner-loop wall clock.
-- [`escalate-over-shortcut`](https://github.com/mtschoen/skills-escalate-over-shortcut) — partner skill for when no fast-tests lever fits and the temptation is to ship a hack.
-- `superpowers:test-driven-development` — upstream. Fast-tests assumes tests exist.
+- [`maintaining-full-coverage`](https://github.com/mtschoen/skills-maintaining-full-coverage) - orthogonal axis. Speed never licenses skipping tests.
+- [`smoke-test`](https://github.com/mtschoen/skills-smoke-test) - orthogonal layer. Outer-loop verify vs. inner-loop wall clock.
+- [`escalate-over-shortcut`](https://github.com/mtschoen/skills-escalate-over-shortcut) - partner skill for when no fast-tests lever fits and the temptation is to ship a hack.
+- `superpowers:test-driven-development` - upstream. Fast-tests assumes tests exist.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT - see `LICENSE`.

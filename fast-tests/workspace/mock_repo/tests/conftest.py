@@ -4,7 +4,7 @@ The `db` fixture is function-scoped (the default), meaning it spins up a
 fresh testcontainers Postgres for every test.  Per-test setup is ~3 seconds,
 making the 30-test suite wall-clock ~90 seconds total.
 
-matches scenario 1 — per-test setup ~3s.
+matches scenario 1 - per-test setup ~3s.
 To fix: change scope to 'session' (or 'module') and truncate tables between
 tests rather than rebuilding the schema each time.
 """
@@ -12,7 +12,7 @@ tests rather than rebuilding the schema each time.
 import pytest
 
 
-@pytest.fixture()  # function scope — deliberately expensive; scenario 1
+@pytest.fixture()  # function scope - deliberately expensive; scenario 1
 def db():
     """Spin up a real Postgres via testcontainers and run migrations.
 
@@ -24,7 +24,7 @@ def db():
     # run_migrations(container.get_connection_url())
     # yield DatabaseClient(container.get_connection_url())
     # container.stop()
-    yield None  # stub — not runnable
+    yield None  # stub - not runnable
 
 
 @pytest.fixture()

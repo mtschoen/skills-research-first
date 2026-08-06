@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run fast-tests skill evals — produce response.md files the grader consumes.
+"""Run fast-tests skill evals - produce response.md files the grader consumes.
 
 Reads evals.json, invokes the coding agent (via `claude -p`) per
 (eval, config, run). All fast-tests evals are single-turn.
@@ -47,11 +47,11 @@ AGENT_PROMPT_TEMPLATE = """{skill_section}You are the coding agent in a live Cla
 ## Mock repo
 
 The repo you're working in is at: {mock_repo}
-You may Read and Grep it if useful. Do NOT actually edit any files — this is a simulation; describe what you WOULD do instead.
+You may Read and Grep it if useful. Do NOT actually edit any files - this is a simulation; describe what you WOULD do instead.
 
 ## Your task
 
-Respond to the user as you would in a real session. Write ONLY the text of the chat message you would send back — don't narrate what you're doing, don't wrap in code fences, don't add meta commentary. Your entire output should be the reply text the user would see.
+Respond to the user as you would in a real session. Write ONLY the text of the chat message you would send back - don't narrate what you're doing, don't wrap in code fences, don't add meta commentary. Your entire output should be the reply text the user would see.
 """
 
 
@@ -199,7 +199,7 @@ def main():
             status = outcome.get("status", "?").upper()
             extra = ""
             if outcome.get("error"):
-                extra = f" — {outcome['error'][:100]}"
+                extra = f" - {outcome['error'][:100]}"
             print(f"  [{status}] {eval_entry['name']}/{config}/{run_dir.name}{extra}", file=sys.stderr)
 
     print("\nDone.", file=sys.stderr)

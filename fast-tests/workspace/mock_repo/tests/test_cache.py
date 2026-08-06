@@ -1,7 +1,7 @@
 """Tests for src/api/cache.py.
 
 Includes test_eviction_after_ttl which sleeps 30 seconds to wait for
-real TTL expiry — this single test dominates the suite wall-clock (scenario 8).
+real TTL expiry - this single test dominates the suite wall-clock (scenario 8).
 
 Fix: inject a clock or use freezegun / a tiny TTL value instead of sleeping.
 """

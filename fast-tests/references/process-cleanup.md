@@ -84,4 +84,4 @@ try {
 }
 ```
 
-Zombie-process risk: if tests don't `waitFor()` after kill, processes may linger as `<defunct>` until the test runner exits. A suite with many leaked zombies accumulates file-descriptor pressure that manifests as port-binding failures late in the run — the symptom looks like flakiness, not a process leak.
+Zombie-process risk: if tests don't `waitFor()` after kill, processes may linger as `<defunct>` until the test runner exits. A suite with many leaked zombies accumulates file-descriptor pressure that manifests as port-binding failures late in the run - the symptom looks like flakiness, not a process leak.

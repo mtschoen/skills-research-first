@@ -1,6 +1,6 @@
 # Pre-warming
 
-Cold-start costs — first-run package installs, model downloads, JIT warm-up, emulator first-boot — are environment-level, not test-level.
+Cold-start costs - first-run package installs, model downloads, JIT warm-up, emulator first-boot - are environment-level, not test-level.
 Pay them once, before the suite (or before dispatching parallel agents), not once per test.
 
 ## Python
@@ -27,8 +27,8 @@ A single warm-up invocation downloads all dependencies and wrapper binaries:
 
 Key cache directories:
 
-- `~/.gradle/caches` — downloaded artifacts and compiled build scripts.
-- `~/.gradle/wrapper/dists` — Gradle wrapper binaries.
+- `~/.gradle/caches` - downloaded artifacts and compiled build scripts.
+- `~/.gradle/wrapper/dists` - Gradle wrapper binaries.
 
 For Android: pre-install the system image before any emulator run.
 A cold `sdkmanager` fetch inside a parallelized agent is a multi-minute blocking download.
@@ -43,7 +43,7 @@ The emulator itself (`emulator -avd <name> -no-window`) can then start without t
 ## .NET
 
 Run `dotnet restore` once at the workspace root before fan-out.
-This populates `~/.nuget/packages` — the global package cache shared across all projects on the machine.
+This populates `~/.nuget/packages` - the global package cache shared across all projects on the machine.
 Subsequent `dotnet build` and `dotnet test` invocations in parallel agents resolve entirely from the local cache.
 
 ```bash

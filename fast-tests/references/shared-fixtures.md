@@ -1,12 +1,12 @@
 # Shared Fixtures
 
 When fixture setup costs more than the test body, the answer is to pay the setup once and let many tests share the result.
-Scope the fixture to the broadest unit that makes correctness sense — don't cache test-mutated state across tests.
+Scope the fixture to the broadest unit that makes correctness sense - don't cache test-mutated state across tests.
 A session-scoped fixture that tests write into is a shared-mutable-state bug waiting to surface under parallel runs.
 
 ## Python
 
-**Fixture scopes** — `scope` controls how often pytest tears down and re-runs the fixture:
+**Fixture scopes** - `scope` controls how often pytest tears down and re-runs the fixture:
 
 | Scope | Runs once per... | Default? |
 |---|---|---|
@@ -23,11 +23,11 @@ def db_connection():
     conn.close()
 ```
 
-The default is `"function"` — one setup+teardown per test. When setup costs >100ms or involves I/O (database connection, network, subprocess), session or module scope is almost always the right call.
+The default is `"function"` - one setup+teardown per test. When setup costs >100ms or involves I/O (database connection, network, subprocess), session or module scope is almost always the right call.
 
-**`conftest.py` placement** — fixtures are visible to tests at the same level and below. A fixture in `tests/conftest.py` is available to all tests. A fixture in `tests/sub/conftest.py` is only available to tests under `tests/sub/`. Define expensive shared fixtures high in the tree.
+**`conftest.py` placement** - fixtures are visible to tests at the same level and below. A fixture in `tests/conftest.py` is available to all tests. A fixture in `tests/sub/conftest.py` is only available to tests under `tests/sub/`. Define expensive shared fixtures high in the tree.
 
-**`yield` for setup/teardown** — everything before `yield` is setup; everything after is teardown. The fixture runs to completion even if the test fails.
+**`yield` for setup/teardown** - everything before `yield` is setup; everything after is teardown. The fixture runs to completion even if the test fails.
 
 ```python
 @pytest.fixture(scope="module")
@@ -39,7 +39,7 @@ def server(tmp_path_factory):
     proc.wait()
 ```
 
-**Factory-as-fixture** — when tests need configured variants without duplicating setup code, the fixture returns a builder function:
+**Factory-as-fixture** - when tests need configured variants without duplicating setup code, the fixture returns a builder function:
 
 ```python
 @pytest.fixture(scope="session")
@@ -57,7 +57,7 @@ def test_admin_access(make_user):
 
 ## JVM
 
-**JUnit 5 `@BeforeAll` without static** — use `@TestInstance(Lifecycle.PER_CLASS)` to share setup across all tests in a class without requiring a static method:
+**JUnit 5 `@BeforeAll` without static** - use `@TestInstance(Lifecycle.PER_CLASS)` to share setup across all tests in a class without requiring a static method:
 
 ```java
 @TestInstance(Lifecycle.PER_CLASS)
@@ -78,7 +78,7 @@ class IntegrationTest {
 
 Before: 30 tests × 3s `@BeforeEach` = 90s. After: one `@BeforeAll` = 3s.
 
-**JUnit 4 `@BeforeClass`** — requires a static method:
+**JUnit 4 `@BeforeClass`** - requires a static method:
 
 ```java
 public class IntegrationTest {
@@ -96,7 +96,7 @@ public class IntegrationTest {
 }
 ```
 
-**`@RegisterExtension` with `ExtensionContext.Store`** — for resources that need a defined lifecycle scoped to a class or suite:
+**`@RegisterExtension` with `ExtensionContext.Store`** - for resources that need a defined lifecycle scoped to a class or suite:
 
 ```java
 @RegisterExtension
@@ -107,7 +107,7 @@ Implement `BeforeAllCallback` and `AfterAllCallback`; store the resource in `con
 
 ## .NET
 
-**xUnit `IClassFixture<T>`** — shared setup for all tests in a class. xUnit creates one `T` instance before the first test and disposes it after the last:
+**xUnit `IClassFixture<T>`** - shared setup for all tests in a class. xUnit creates one `T` instance before the first test and disposes it after the last:
 
 ```csharp
 public class DatabaseFixture : IDisposable {
@@ -121,7 +121,7 @@ public class MyTests : IClassFixture<DatabaseFixture> {
 }
 ```
 
-**xUnit `ICollectionFixture<T>`** — share a fixture across multiple test classes in the same collection:
+**xUnit `ICollectionFixture<T>`** - share a fixture across multiple test classes in the same collection:
 
 ```csharp
 [CollectionDefinition("Database")]
@@ -136,7 +136,7 @@ public class InvoiceTests : { ... }
 
 Both `OrderTests` and `InvoiceTests` get the same `DatabaseFixture` instance.
 
-**xUnit `IAsyncLifetime`** — for async setup/teardown:
+**xUnit `IAsyncLifetime`** - for async setup/teardown:
 
 ```csharp
 public class ServerFixture : IAsyncLifetime {
@@ -146,7 +146,7 @@ public class ServerFixture : IAsyncLifetime {
 }
 ```
 
-**NUnit `[OneTimeSetUp]`** — per-fixture setup that runs once per test class (not once per test):
+**NUnit `[OneTimeSetUp]`** - per-fixture setup that runs once per test class (not once per test):
 
 ```csharp
 [TestFixture]

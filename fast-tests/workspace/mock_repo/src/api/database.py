@@ -1,6 +1,6 @@
 """Database client for the mock API service.
 
-Real Postgres connection via testcontainers — boundary we own.
+Real Postgres connection via testcontainers - boundary we own.
 Tests that want speed should amortize this fixture, not mock it.
 """
 
@@ -8,7 +8,7 @@ Tests that want speed should amortize this fixture, not mock it.
 class DatabaseClient:
     """Wraps a real Postgres connection.
 
-    This is a boundary we OWN — do not mock this class in tests.
+    This is a boundary we OWN - do not mock this class in tests.
     Mock at the psycopg2 driver or socket level if an external boundary
     mock is truly needed; mocking DatabaseClient means tests pass while
     the DB integration silently breaks.

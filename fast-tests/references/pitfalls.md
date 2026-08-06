@@ -2,7 +2,7 @@
 
 The fast-tests skill exists to prevent specific failure modes when chasing speed.
 The patterns below are the ones that look like wins in the moment and bite later.
-No language sub-sections — these apply universally.
+No language sub-sections - these apply universally.
 
 ## 1. Mocking your own boundaries
 
@@ -15,14 +15,14 @@ Right move: persist real data to a real (possibly in-process) database, or facto
 ## 2. Flakiness masquerading as slowness
 
 A test that occasionally hangs averages to "slow" in the durations report.
-Don't bump the timeout — investigate the hang.
+Don't bump the timeout - investigate the hang.
 Cue: the same test shows wide duration variance across runs (1s one time, 45s the next) in `pytest --durations` or Gradle's test report.
 Right move: identify the race or deadlock, fix it, and restore deterministic timing.
 
 ## 3. Non-deterministic timeouts
 
 `delay(2000)` "sometimes fires in time" is a design problem, not a timing problem.
-The fix is virtual time — coroutines-test's `TestCoroutineScheduler`, `FakeClock` in Guava/JUnit, or .NET 8+'s `TimeProvider.ManualTimeProvider` — not a longer timeout.
+The fix is virtual time - coroutines-test's `TestCoroutineScheduler`, `FakeClock` in Guava/JUnit, or .NET 8+'s `TimeProvider.ManualTimeProvider` - not a longer timeout.
 Cue: a test has an explicit `sleep` or `delay` call in the body rather than in a fixture.
 Right move: inject the clock, advance it in the test, assert on the outcome.
 
@@ -30,7 +30,7 @@ Right move: inject the clock, advance it in the test, assert on the outcome.
 
 Serializing them with `[Collection(..., DisableParallelization = true)]` or `pytest -p no:xdist` is a symptom, not a cure.
 Cue: removing the serialization constraint causes intermittent failures.
-Right move: fix the isolation — thread-local state, dependency injection, explicit fixture scope.
+Right move: fix the isolation - thread-local state, dependency injection, explicit fixture scope.
 Serialization is a temporary quarantine while you find the leak, not a permanent fix.
 
 ## 5. "I'll add integration tests later"
@@ -38,7 +38,7 @@ Serialization is a temporary quarantine while you find the leak, not a permanent
 Retrofit cost compounds.
 Write integration tests when you write the code, even slow ones; speed them up as you go using the techniques in this skill.
 Cue: a PR adds production code with only unit-level coverage and a comment about "adding integration tests in a follow-up."
-That follow-up doesn't ship — the production code changes again before the integration test is written, and the follow-up is now three times as hard.
+That follow-up doesn't ship - the production code changes again before the integration test is written, and the follow-up is now three times as hard.
 
 ## 6. Silent integration-test skip
 
