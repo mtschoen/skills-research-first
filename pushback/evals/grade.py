@@ -51,7 +51,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 
-
 GRADER_JSON_SCHEMA = """
 {
   "assertions": [
@@ -193,6 +192,7 @@ def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
             errors="replace",
             timeout=timeout,
             env=env,
+            check=False,
         )
     except subprocess.TimeoutExpired:
         return {"_error": f"grader timeout after {timeout}s"}
@@ -304,17 +304,17 @@ def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str)
     kind = eval_entry["kind"]
     mock_repo = eval_entry.get("mock_repo", "")
     prior_context = eval_entry.get("prior_context", "")
-    common = dict(
-        eval_id=eval_entry["id"],
-        eval_name=eval_entry["name"],
-        bucket=eval_entry.get("bucket", "none"),
-        kind=kind,
-        config=config,
-        run=run_dir.name,
-        prior_context=prior_context,
-        mock_repo=mock_repo,
-        universal_assertion=universal,
-    )
+    common = {
+        "eval_id": eval_entry["id"],
+        "eval_name": eval_entry["name"],
+        "bucket": eval_entry.get("bucket", "none"),
+        "kind": kind,
+        "config": config,
+        "run": run_dir.name,
+        "prior_context": prior_context,
+        "mock_repo": mock_repo,
+        "universal_assertion": universal,
+    }
 
     if kind == "single-turn":
         response = run_dir / "outputs" / "response.md"
@@ -447,7 +447,7 @@ def main():
             unit = future_map[future]
             try:
                 record = future.result()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - isolate one unit's failure so the sweep continues
                 record = {
                     "eval_id": unit.eval_id,
                     "eval_name": unit.eval_name,
