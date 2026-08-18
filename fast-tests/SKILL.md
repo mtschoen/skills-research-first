@@ -1,6 +1,6 @@
 ---
 name: fast-tests
-description: "Use when the agent observes slow test runs in this session (multi-minute wall clock, repeated re-runs blocking iteration, tests dominating the inner loop) OR when adding tests likely to slow the loop down (integration tests, sleeps/timeouts, external services, fixture-heavy setup). Steers toward fast integration-test loops by speeding up SETUP - never by replacing integration tests with unit mocks that fake the verify. Project-agnostic; per-language references for Python, JVM, .NET."
+description: "Use when the agent observes slow test runs in this session (multi-minute wall clock, repeated re-runs blocking iteration, tests dominating the inner loop, thousands of subprocess spawns, coverage/instrumentation overhead) OR when adding tests likely to slow the loop down (integration tests, sleeps/timeouts, external services, fixture-heavy setup). Steers toward fast integration-test loops by speeding up SETUP - never by replacing integration tests with unit mocks that fake the verify. Project-agnostic; per-language references for Python, JVM, .NET."
 ---
 
 # Fast Tests
@@ -114,6 +114,30 @@ fixture setup, teardown, or body.
    fast tier, a 2-second unit test that starts a subprocess goes in the slow tier.
    See `references/tiering.md`.
 
+7. **Profile shows subprocess spawn volume dominating (hundreds to thousands of short-lived
+   processes - git, CLI tools, compilers - workers I/O-blocked on process creation, low CPU
+   despite parallelism already being on)** → census the spawns, then do less of them.
+   Instrument the project's sanctioned subprocess chokepoint (the wrapper module all calls
+   route through) to record argv, cwd, and the calling stack per spawn for one suite run -
+   stack attribution separates fixture spawns from production-code spawns for free.
+   Attack in this order: (a) production-side redundancy - identical argv+cwd with no state
+   mutation between the calls is pure waste, and removing it speeds production too;
+   (b) a verified fake at the chokepoint seam for tests that assert orchestration rather
+   than the external tool's semantics - see `references/verified-fakes.md` for the
+   contract-suite requirement that separates this from a mock that fakes the verify, and
+   for the payoff-floor measurement to do FIRST.
+   Regression-guard the win by asserting on spawn counts, not wall clock - counts are
+   deterministic and load-independent.
+
+A note on levers that swap the measurement instrumentation itself (a coverage tracer core,
+a profiler mode): A/B the semantic OUTPUT as well as the wall clock.
+Run the suite both ways and diff the coverage report line-by-line before flipping anything a
+gate reads.
+Tracer cores differ at the margins (generator delegation, teardown timing) - lines can shift
+from covered to missed while every test still passes, and at a 100% floor any shifted line is
+a red gate.
+"Same results, just faster" is a claim to verify, not assume.
+
 If none of these branches fits and the slowness seems structural - the code's design makes cheap
 testing impossible without touching the assertions - the solution is to restructure the production
 code, not to exclude tests or weaken assertions (Principle 5).
@@ -165,6 +189,17 @@ belong, refactor the production code so the dependency is injectable. This is th
 full statement and worked examples - the move is identical here, applied to speed instead of
 coverage.
 
+The converse also holds: sometimes tests are slow because PRODUCTION is slow.
+A suite that drives real orchestration is the first profiler honest enough to bill you for
+every redundant subprocess, duplicate fetch, and re-derived state - multiplied by every test
+that exercises the path.
+When the profile shows production doing wasted work, fixing production IS the test speedup,
+and this is one of the few sanctioned cases where production code changes for the sake of
+tests: the contortion is simultaneously a straight production win, because the same duplicate
+call is waste in every live run.
+Distinguish this from adding test-only knobs or seams production never exercises - that is
+still an `escalate-over-shortcut` event.
+
 **6. Mock at genuine external boundaries only - never at boundaries you own.**
 
 A mock is an assertion that the real thing would be called.
@@ -174,6 +209,16 @@ Do not mock your own service layer, your own repository, your own interface betw
 you control.
 Mocking your own boundaries means you're no longer testing the integration.
 The test passes because the mock says it passes, not because the product works.
+
+One exception, earned rather than assumed: a **verified fake** of an owned seam is legitimate
+when a contract suite runs the same parametrized tests against the real implementation AND the
+fake, pinning every behavior the fake models.
+The contract suite is the load-bearing part - without it, the fake is just a mock that fakes
+the verify.
+Swapping in a different real implementation of the external tool (an in-process library
+reimplementation) is NOT this pattern: it changes the system under test instead of modeling
+the seam.
+Full pattern, economics, and migration order: `references/verified-fakes.md`.
 
 ## Rationalization table
 
@@ -187,6 +232,8 @@ The test passes because the mock says it passes, not because the product works.
 | "Restructuring code to be testable is overkill" | Restructuring code to be testable is the same lever as deleting dead code - both eliminate uncovered, hard-to-reason-about branches and pay down design debt. |
 | "Parallelism will fix everything" | Parallelism helps when CPU is the bottleneck. When the bottleneck is a single serialized setup step, parallel test workers all wait on the same thing. Profile first. |
 | "The tests are fast enough for now" | Fast enough for now means slow enough to defer. Write down the current wall clock. When it doubles - and it will - you'll be glad you had the number. |
+| "An in-process library version of the external tool is faster and still real" | It's a different implementation, so the tests now exercise the library's semantics, not the tool the product ships against. Use a verified fake with a contract suite, or keep the real tool. |
+| "The instrumentation swap doesn't change results, just speed" | Tracer cores and profiler modes differ at the margins. Diff the semantic output (per-line coverage) both ways before flipping anything a gate reads. |
 
 ## References
 
@@ -198,6 +245,7 @@ The test passes because the mock says it passes, not because the product works.
 - `references/process-cleanup.md` - Snapshot-then-kill-tree on Windows; ppid tracking on Unix.
 - `references/tiering.md` - Wall-clock-based tagging, NOT unit-vs-integration.
 - `references/pitfalls.md` - Cross-cutting anti-patterns to recognize and avoid.
+- `references/verified-fakes.md` - The sanctioned owned-seam fake: contract suite, payoff-floor measurement, spawn-count regression guards.
 
 ## Integration notes
 
