@@ -3,21 +3,19 @@
 ALERT_LOG = []
 
 
-def _record_alert(prefix, message):
+def send_alert(message, urgent):
+    """Record and print an alert.
+
+    ``urgent=True`` is used for time-sensitive operational issues (for
+    example, low stock discovered while processing an order). ``urgent
+    =False`` is used for routine informational messages (for example, a
+    report finishing successfully).
+    """
+    prefix = "[URGENT]" if urgent else "[INFO]"
     entry = f"{prefix} {message}"
     ALERT_LOG.append(entry)
     print(entry)
     return entry
-
-
-def send_page(message):
-    """Send a time-sensitive operational page (for example, low stock)."""
-    return _record_alert("[URGENT]", message)
-
-
-def send_routine_notice(message):
-    """Send a routine informational notice (for example, a completed report)."""
-    return _record_alert("[INFO]", message)
 
 
 def clear_alerts():

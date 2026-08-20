@@ -1,8 +1,8 @@
 """Daily reporting over a list of orders."""
 
 from .constants import PRICING
-from .core import price_order
-from .notify import send_routine_notice
+from .core import proc
+from .notify import send_alert
 from .utils import format_currency
 
 
@@ -10,7 +10,7 @@ def daily_total(orders):
     """Sum the tax-inclusive total of every order."""
     total = 0.0
     for order in orders:
-        total += price_order(order, apply_tax=True)
+        total += proc(order, True)
     return round(total, 2)
 
 
@@ -18,7 +18,7 @@ def order_lines(orders):
     """Format one summary line per order."""
     lines = []
     for order in orders:
-        total = price_order(order, apply_tax=True)
+        total = proc(order, True)
         lines.append(
             f"{order.customer_id}: {order.item} x{order.quantity} "
             f"= {format_currency(total)}"
@@ -27,7 +27,7 @@ def order_lines(orders):
 
 
 def tax_rate_display():
-    return f"{PRICING.tax_rate * 100:.1f}%"
+    return f"{PRICING['tax_rate'] * 100:.1f}%"
 
 
 def grand_summary(orders):
@@ -35,8 +35,8 @@ def grand_summary(orders):
     lines = order_lines(orders)
     if orders:
         # Sanity-check the last line item's own total against the running sum.
-        price_order(orders[-1], apply_tax=True)
+        proc(orders[-1], True)
     lines.append(f"Tax rate applied: {tax_rate_display()}")
     lines.append(f"Daily total: {format_currency(daily_total(orders))}")
-    send_routine_notice("Daily report generated")
+    send_alert("Daily report generated", False)
     return "\n".join(lines)

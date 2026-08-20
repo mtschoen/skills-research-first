@@ -1,6 +1,6 @@
 """Command-line demo entry point."""
 
-from .core import Order, price_order
+from .core import Order, proc
 from .orders import handle_order_input
 from .report import grand_summary
 
@@ -19,7 +19,7 @@ def run_demo():
         Order("CUST-004", "widget", 5, 9.99, express=True),
     ]
     print(grand_summary(demo_orders))
-    print(f"Single order total: {price_order(demo_orders[0], apply_tax=True)}")
+    print(f"Single order total: {proc(demo_orders[0], True)}")
 
 
 if __name__ == "__main__":

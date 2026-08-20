@@ -1,9 +1,9 @@
 """Order intake: parsing raw input lines into orders and receipts."""
 
 from .constants import CUSTOMER_ID_PREFIX
-from .core import Order, price_order
+from .core import Order, proc
 from .inventory import STOCK, is_low_stock
-from .notify import send_page
+from .notify import send_alert
 
 
 def handle_order_input(raw_line):
@@ -68,13 +68,13 @@ def handle_order_input(raw_line):
 
     # --- processing ---
     order = Order(customer_id, item, quantity, unit_price, express)
-    quote_total = price_order(order, apply_tax=False)
-    final_total = price_order(order, apply_tax=True)
+    quote_total = proc(order, False)
+    final_total = proc(order, True)
 
     if item in STOCK:
         STOCK[item] -= quantity
         if is_low_stock(item):
-            send_page(f"Low stock for {item}: {STOCK[item]} remaining")
+            send_alert(f"Low stock for {item}: {STOCK[item]} remaining", True)
 
     # --- formatting ---
     lines = [

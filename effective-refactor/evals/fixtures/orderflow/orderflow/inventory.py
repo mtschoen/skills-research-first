@@ -1,7 +1,7 @@
 """In-memory stock tracking and restock cost estimation."""
 
 from .constants import LOW_STOCK_THRESHOLD
-from .core import Order, price_order
+from .core import Order, proc
 
 STOCK = {
     "widget": 50,
@@ -16,13 +16,13 @@ RESTOCK_SUPPLIER = "CUST-SUPPLY"
 def restock_cost(item, quantity, unit_price, express=False):
     """Estimate the tax-inclusive cost to restock an item from the supplier."""
     order = Order(RESTOCK_SUPPLIER, item, quantity, unit_price, express)
-    return price_order(order, apply_tax=True)
+    return proc(order, True)
 
 
 def clearance_price(item, quantity, unit_price):
     """Estimate a no-tax clearance price for overstocked items."""
     order = Order(RESTOCK_SUPPLIER, item, quantity, unit_price, express=False)
-    return price_order(order, apply_tax=False)
+    return proc(order, False)
 
 
 def restock(item, quantity):

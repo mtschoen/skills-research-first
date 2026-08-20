@@ -8,7 +8,7 @@ class TestUtils(unittest.TestCase):
     def test_format_currency(self):
         self.assertEqual(format_currency(9.5), "$9.50")
 
-    def test_rounded_total_matches_price_order(self):
+    def test_rounded_total_matches_proc(self):
         order = Order("CUST-001", "widget", 2, 10.0)
         self.assertEqual(rounded_total(order, True), "$27.00")
 

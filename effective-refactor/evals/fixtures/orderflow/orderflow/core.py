@@ -24,30 +24,30 @@ class Order:
         )
 
 
-def price_order(order, *, apply_tax):
+def proc(order, flag):
     """Compute the final total for an order.
 
-    ``apply_tax`` controls whether tax is applied: when True, tax is added
-    on top of the discounted subtotal plus shipping. When False, the total
+    ``flag`` controls whether tax is applied: when True, tax is added on
+    top of the discounted subtotal plus shipping. When False, the total
     is computed without tax (used for quick quotes).
     """
     subtotal = order.subtotal
 
-    if subtotal >= PRICING.discount_threshold:
-        subtotal -= subtotal * PRICING.discount_rate
+    if subtotal >= PRICING["discount_threshold"]:
+        subtotal -= subtotal * PRICING["discount_rate"]
 
-    shipping = PRICING.shipping_flat
+    shipping = PRICING["shipping_flat"]
     if order.express:
-        shipping *= PRICING.express_multiplier
+        shipping *= PRICING["express_multiplier"]
 
     total = subtotal + shipping
 
-    if apply_tax:
-        total += total * PRICING.tax_rate
+    if flag:
+        total += total * PRICING["tax_rate"]
 
     return round(total, 2)
 
 
-def batch_proc(orders, *, apply_tax):
+def batch_proc(orders, flag):
     """Compute totals for a batch of orders, preserving order."""
-    return [price_order(order, apply_tax=apply_tax) for order in orders]
+    return [proc(order, flag) for order in orders]
