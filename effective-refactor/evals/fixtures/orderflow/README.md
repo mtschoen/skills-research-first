@@ -22,18 +22,18 @@ print(receipt)
 
 Run the demo:
 
-```
+```bash
 python -m orderflow.main
 ```
 
 ## Running tests
 
-```
+```bash
 python -m unittest discover -s tests -t .
 ```
 
 or, if pytest is installed:
 
-```
+```bash
 python -m pytest
 ```
