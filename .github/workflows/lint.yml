@@ -16,6 +16,52 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           globs: '**/*.md'
+  python:
+    # Each skill below owns its own ruff+pytest gate, run from its own
+    # directory. fast-tests and pushback tolerate pytest's exit 5 (no tests
+    # collected yet); using-a-debugger's backend tests self-skip when their
+    # debugger or compiler is absent, so live-driver coverage comes from a
+    # developer machine, not CI.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install ruff==0.15.15 pytest
+      - name: fast-tests
+        working-directory: fast-tests
+        run: |
+          ruff check evals/
+          ruff format --check evals/
+      - name: fast-tests pytest (allow exit 5 = no tests yet)
+        working-directory: fast-tests
+        run: |
+          set +e
+          pytest evals/
+          rc=$?
+          if [ $rc -eq 0 ] || [ $rc -eq 5 ]; then exit 0; fi
+          exit $rc
+      - name: pushback
+        working-directory: pushback
+        run: |
+          ruff check evals/
+      - name: pushback pytest (allow exit 5 = no tests yet)
+        working-directory: pushback
+        run: |
+          set +e
+          pytest evals/
+          rc=$?
+          if [ $rc -eq 0 ] || [ $rc -eq 5 ]; then exit 0; fi
+          exit $rc
+      - name: using-a-debugger
+        working-directory: using-a-debugger
+        run: |
+          ruff check scripts evals
+          ruff format --check scripts evals
+          python -m pytest scripts/dbgsession -q
+
   shell:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -24,4 +70,4 @@ jobs:
       - uses: ludeeus/action-shellcheck@2.0.0
         with:
           severity: error
-          scandir: './hooks'
+          scandir: '.'

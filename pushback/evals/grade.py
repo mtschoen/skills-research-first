@@ -150,7 +150,7 @@ class GradingUnit:
 
 def build_grader_prompt(unit: GradingUnit) -> str:
     response_text = unit.response_path.read_text(encoding="utf-8", errors="replace")
-    assertions_list = "\n".join(f"{i+1}. {a}" for i, a in enumerate(unit.assertions))
+    assertions_list = "\n".join(f"{i + 1}. {a}" for i, a in enumerate(unit.assertions))
     conversation_history = unit.conversation_history or "(no prior rounds)"
     return GRADER_PROMPT_TEMPLATE.format(
         eval_name=unit.eval_name,
@@ -173,10 +173,14 @@ def build_grader_prompt(unit: GradingUnit) -> str:
 
 def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
     cmd = [
-        "claude", "-p",
-        "--output-format", "json",
-        "--permission-mode", "bypassPermissions",
-        "--tools", "Read,Grep,Glob",
+        "claude",
+        "-p",
+        "--output-format",
+        "json",
+        "--permission-mode",
+        "bypassPermissions",
+        "--tools",
+        "Read,Grep,Glob",
         "--disable-slash-commands",
     ]
     if model:
@@ -207,11 +211,15 @@ def invoke_grader(prompt: str, model: str | None, timeout: int) -> dict:
     inner_text = wrapper.get("result", "") if isinstance(wrapper, dict) else ""
     payload = _extract_json_object(inner_text)
     if payload is None:
-        return {"_error": f"grader inner payload has no JSON object; raw={inner_text[:500]}"}
+        return {
+            "_error": f"grader inner payload has no JSON object; raw={inner_text[:500]}"
+        }
     try:
         return json.loads(payload)
     except json.JSONDecodeError as e:
-        return {"_error": f"grader inner JSON failed to parse: {e}; raw={payload[:500]}"}
+        return {
+            "_error": f"grader inner JSON failed to parse: {e}; raw={payload[:500]}"
+        }
 
 
 def _extract_json_object(text: str) -> str | None:
@@ -226,7 +234,9 @@ def _extract_json_object(text: str) -> str | None:
     stripped = text.strip()
     if stripped.startswith("```"):
         lines = stripped.splitlines()
-        stripped = "\n".join(line for line in lines if not line.strip().startswith("```"))
+        stripped = "\n".join(
+            line for line in lines if not line.strip().startswith("```")
+        )
     # Find first { and walk balanced braces, respecting strings
     start = stripped.find("{")
     if start < 0:
@@ -251,7 +261,7 @@ def _extract_json_object(text: str) -> str | None:
         elif c == "}":
             depth -= 1
             if depth == 0:
-                return stripped[start:i + 1]
+                return stripped[start : i + 1]
     return None
 
 
@@ -273,7 +283,9 @@ def format_conversation_history(prior_rounds: list) -> str:
     return "\n".join(lines)
 
 
-def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[GradingUnit]:
+def discover_units(
+    responses_dir: Path, by_id: dict, universal: str
+) -> list[GradingUnit]:
     units = []
     for eval_dir in sorted(responses_dir.iterdir()):
         if not eval_dir.is_dir() or not eval_dir.name.startswith("eval-"):
@@ -284,7 +296,10 @@ def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[Gra
             continue
         eval_entry = by_id.get(eval_id)
         if not eval_entry:
-            print(f"WARN: {eval_dir.name} has no matching eval in evals.json", file=sys.stderr)
+            print(
+                f"WARN: {eval_dir.name} has no matching eval in evals.json",
+                file=sys.stderr,
+            )
             continue
 
         for config in ("with_skill", "without_skill"):
@@ -294,13 +309,13 @@ def discover_units(responses_dir: Path, by_id: dict, universal: str) -> list[Gra
             for run_dir in sorted(config_dir.iterdir()):
                 if not run_dir.name.startswith("run-"):
                     continue
-                units.extend(
-                    _units_for_run(run_dir, eval_entry, config, universal)
-                )
+                units.extend(_units_for_run(run_dir, eval_entry, config, universal))
     return units
 
 
-def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str) -> list[GradingUnit]:
+def _units_for_run(
+    run_dir: Path, eval_entry: dict, config: str, universal: str
+) -> list[GradingUnit]:
     kind = eval_entry["kind"]
     mock_repo = eval_entry.get("mock_repo", "")
     prior_context = eval_entry.get("prior_context", "")
@@ -320,15 +335,17 @@ def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str)
         response = run_dir / "outputs" / "response.md"
         if not response.exists():
             return []
-        return [GradingUnit(
-            round_label="single-turn",
-            conversation_history="",
-            user_message=eval_entry["user"],
-            response_path=response,
-            output_grading_path=run_dir / "grading.json",
-            assertions=eval_entry["assertions"],
-            **common,
-        )]
+        return [
+            GradingUnit(
+                round_label="single-turn",
+                conversation_history="",
+                user_message=eval_entry["user"],
+                response_path=response,
+                output_grading_path=run_dir / "grading.json",
+                assertions=eval_entry["assertions"],
+                **common,
+            )
+        ]
 
     units: list = []
     prior_rounds: list[dict] = []
@@ -338,17 +355,24 @@ def _units_for_run(run_dir: Path, eval_entry: dict, config: str, universal: str)
         response = round_dir / "outputs" / "response.md"
         if not response.exists():
             break
-        units.append(GradingUnit(
-            round_label=f"round-{round_n}",
-            conversation_history=format_conversation_history(prior_rounds),
-            user_message=round_entry["user"],
-            response_path=response,
-            output_grading_path=round_dir / "grading.json",
-            assertions=round_entry["assertions"],
-            **common,
-        ))
+        units.append(
+            GradingUnit(
+                round_label=f"round-{round_n}",
+                conversation_history=format_conversation_history(prior_rounds),
+                user_message=round_entry["user"],
+                response_path=response,
+                output_grading_path=round_dir / "grading.json",
+                assertions=round_entry["assertions"],
+                **common,
+            )
+        )
         prior_rounds.append({"role": "user", "content": round_entry["user"]})
-        prior_rounds.append({"role": "assistant", "content": response.read_text(encoding="utf-8", errors="replace")})
+        prior_rounds.append(
+            {
+                "role": "assistant",
+                "content": response.read_text(encoding="utf-8", errors="replace"),
+            }
+        )
     return units
 
 
@@ -371,7 +395,9 @@ def grade_unit(unit: GradingUnit, model: str | None, timeout: int) -> dict:
 def summarize(records: list[dict]) -> dict:
     total = len(records)
     errored = [r for r in records if "_error" in r]
-    universal_failures = [r for r in records if r.get("universal", {}).get("passed") is False]
+    universal_failures = [
+        r for r in records if r.get("universal", {}).get("passed") is False
+    ]
     degenerated_r1 = [r for r in records if r.get("r1_degenerated") is True]
 
     pass_rates = []
@@ -394,19 +420,36 @@ def summarize(records: list[dict]) -> dict:
         "mean_pass_rate": mean_rate,
         "mean_pass_rate_with_skill": (
             sum(by_config["with_skill"]) / len(by_config["with_skill"])
-            if by_config["with_skill"] else None
+            if by_config["with_skill"]
+            else None
         ),
         "mean_pass_rate_without_skill": (
             sum(by_config["without_skill"]) / len(by_config["without_skill"])
-            if by_config["without_skill"] else None
+            if by_config["without_skill"]
+            else None
         ),
         "errored_units": [
-            {"eval_name": r["eval_name"], "config": r["config"], "run": r["run"], "round": r["round"], "error": r["_error"]}
+            {
+                "eval_name": r["eval_name"],
+                "config": r["config"],
+                "run": r["run"],
+                "round": r["round"],
+                "error": r["_error"],
+            }
             for r in errored
         ],
         "universal_failure_units": [
-            {"eval_name": r["eval_name"], "config": r["config"], "run": r["run"], "round": r["round"],
-             "bad_claims": [c for c in r["universal"].get("claims", []) if not c.get("verified", True)]}
+            {
+                "eval_name": r["eval_name"],
+                "config": r["config"],
+                "run": r["run"],
+                "round": r["round"],
+                "bad_claims": [
+                    c
+                    for c in r["universal"].get("claims", [])
+                    if not c.get("verified", True)
+                ],
+            }
             for r in universal_failures
         ],
     }
@@ -414,13 +457,29 @@ def summarize(records: list[dict]) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description="Grade pushback-skill eval responses")
-    parser.add_argument("--responses-dir", required=True, help="Directory containing eval-*/config/run-*/ structure")
+    parser.add_argument(
+        "--responses-dir",
+        required=True,
+        help="Directory containing eval-*/config/run-*/ structure",
+    )
     parser.add_argument("--evals", required=True, help="Path to evals.json")
-    parser.add_argument("--model", default=None, help="Model for grader subagent (default: user's configured)")
-    parser.add_argument("--timeout", type=int, default=300, help="Timeout per grader call in seconds")
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model for grader subagent (default: user's configured)",
+    )
+    parser.add_argument(
+        "--timeout", type=int, default=300, help="Timeout per grader call in seconds"
+    )
     parser.add_argument("--parallel", type=int, default=4, help="Parallel grader calls")
-    parser.add_argument("--only-eval", type=int, default=None, help="Grade only this eval id")
-    parser.add_argument("--dry-run", action="store_true", help="Discover units and print counts; do not invoke grader")
+    parser.add_argument(
+        "--only-eval", type=int, default=None, help="Grade only this eval id"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Discover units and print counts; do not invoke grader",
+    )
     args = parser.parse_args()
 
     responses_dir = Path(args.responses_dir).resolve()
@@ -434,14 +493,16 @@ def main():
     print(f"Discovered {len(units)} grading units in {responses_dir}", file=sys.stderr)
     if args.dry_run:
         for u in units:
-            print(f"  {u.eval_name} / {u.config} / {u.run} / {u.round_label}", file=sys.stderr)
+            print(
+                f"  {u.eval_name} / {u.config} / {u.run} / {u.round_label}",
+                file=sys.stderr,
+            )
         return
 
     records = []
     with ThreadPoolExecutor(max_workers=args.parallel) as executor:
         future_map = {
-            executor.submit(grade_unit, u, args.model, args.timeout): u
-            for u in units
+            executor.submit(grade_unit, u, args.model, args.timeout): u for u in units
         }
         for future in as_completed(future_map):
             unit = future_map[future]
@@ -458,11 +519,16 @@ def main():
                 }
             records.append(record)
             status = "OK" if "_error" not in record else "ERR"
-            print(f"  [{status}] {unit.eval_name}/{unit.config}/{unit.run}/{unit.round_label}", file=sys.stderr)
+            print(
+                f"  [{status}] {unit.eval_name}/{unit.config}/{unit.run}/{unit.round_label}",
+                file=sys.stderr,
+            )
 
     summary_path = responses_dir / "grading_summary.json"
     summary = summarize(records)
-    summary_path.write_text(json.dumps({"summary": summary, "records": records}, indent=2), encoding="utf-8")
+    summary_path.write_text(
+        json.dumps({"summary": summary, "records": records}, indent=2), encoding="utf-8"
+    )
     print(f"\nSummary written to {summary_path}", file=sys.stderr)
     print(json.dumps(summary, indent=2))
 
