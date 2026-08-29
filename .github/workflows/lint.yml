@@ -29,7 +29,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install ruff==0.15.15 pytest
+      - run: pip install ruff==0.15.15 pytest pytest-cov
+      - name: ci scripts
+        run: |
+          ruff check ci/
+          ruff format --check ci/
+          python -m pytest ci/ -q
       - name: fast-tests
         working-directory: fast-tests
         run: |
@@ -60,7 +65,12 @@ jobs:
         run: |
           ruff check scripts evals
           ruff format --check scripts evals
-          python -m pytest scripts/dbgsession -q
+          python -m pytest scripts ../ci -q --cov=scripts --cov=../ci --cov-report=json:coverage.json
+      - name: Post coverage status
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 ci/post-coverage-status.py --coverage-json using-a-debugger/coverage.json
 
   shell:
     runs-on: ubuntu-latest

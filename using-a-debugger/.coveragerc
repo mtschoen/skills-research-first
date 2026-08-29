@@ -1,0 +1,8 @@
+# Scopes the CI coverage gate (see ../.github/workflows/lint.yml) to
+# production code. Test modules are colocated as test_*.py alongside the
+# code they exercise; a test module that runs is trivially "covered" by
+# itself, so measuring it alongside production code would let the gate pass
+# by counting test statements instead of the production logic they test.
+[run]
+omit =
+    */test_*.py

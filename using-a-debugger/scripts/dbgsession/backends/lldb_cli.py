@@ -3,6 +3,8 @@
 import contextlib
 import re
 import sys
+import time
+from collections.abc import Callable
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -11,11 +13,42 @@ from backends.base import Backend
 from transport import open_transport
 
 _TIMEOUT = 30.0
+# lldb, when its stdout is a pipe rather than a terminal, does not print each
+# line of a stop notification (the "stopped" line, thread status, frame info,
+# source context) as one atomic write - they land in our read queue as a fast
+# burst of separate lines. Once no further lines have arrived for this long,
+# the burst is done and it is safe to send the next command; this replaces a
+# fixed post-stop sleep, which under load was not always long enough to
+# outlast the burst and let a written command race lldb's echo of it.
+_QUIET_SECONDS = 0.2
 _STOP_PATTERN = re.compile(r"stop reason =|Process \d+ exited|exited with status")
 
 
 def _has_stopped(text: str) -> bool:
     return bool(_STOP_PATTERN.search(text))
+
+
+def _stopped_and_quiet(idle_seconds: float) -> Callable[[str], bool]:
+    """Build a read_until predicate: true once _has_stopped matches AND the
+    accumulated text has stopped growing for `idle_seconds`."""
+    state = {"stable_since": None, "last_len": -1}
+
+    def predicate(text: str) -> bool:
+        if not _has_stopped(text):
+            state["last_len"] = len(text)
+            state["stable_since"] = None
+            return False
+        now = time.monotonic()
+        if len(text) != state["last_len"]:
+            state["last_len"] = len(text)
+            state["stable_since"] = now
+            return False
+        if state["stable_since"] is None:
+            state["stable_since"] = now
+            return False
+        return (now - state["stable_since"]) >= idle_seconds
+
+    return predicate
 
 
 class LldbCliBackend(Backend):
@@ -53,7 +86,11 @@ class LldbCliBackend(Backend):
 
     def _run_exec(self, command: str) -> str:
         self._transport.write(command + "\n")
-        stop_text = self._transport.read_until(_has_stopped, _TIMEOUT)
+        # Wait for the stop line, then for the trailing burst of detail that
+        # follows it to go quiet (see _stopped_and_quiet) instead of guessing
+        # a fixed delay - writing the next command before that burst has
+        # fully arrived races lldb's echo of our input and can corrupt it.
+        stop_text = self._transport.read_until(_stopped_and_quiet(_QUIET_SECONDS), _TIMEOUT)
         token = self._next_token()
         self._transport.write(f'script print("{token}")\n')
         drain = self._transport.read_until(

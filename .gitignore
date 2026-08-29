@@ -1,6 +1,16 @@
 workspace/
 
+# Coverage artifacts (measured in CI, posted as pr-crew/coverage; nothing committed)
+.coverage
+coverage.json
+**/coverage.json
+**/.coverage
+**/.pytest_cache/
+**/__pycache__/
+*.py[cod]
+
 # aislop runtime artifacts (session/history logs, caches, baselines).
 # Unanchored so nested project directories are covered too.
 **/.aislop/*
 !**/.aislop/config.yml
+
